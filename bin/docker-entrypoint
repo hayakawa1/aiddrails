@@ -6,9 +6,19 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
+# Wait for PostgreSQL to be ready
+echo "Waiting for PostgreSQL to be ready..."
+until pg_isready -h db -U postgres; do
+  echo "PostgreSQL is unavailable - sleeping"
+  sleep 1
+done
+echo "PostgreSQL is up - continuing"
+
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  echo "Preparing database..."
   ./bin/rails db:prepare
+  echo "Database prepared."
 fi
 
 exec "${@}"

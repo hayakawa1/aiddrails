@@ -79,6 +79,34 @@ This script will:
 6. Run database migrations
 7. Restart the application
 
+#### Option 3: Super Simple SSH Deployment
+
+The simplest deployment option using SSH and Git:
+
+```bash
+# Using SSH key authentication
+./deployment_configs/simple_deploy.sh
+
+# Using password authentication (requires sshpass)
+./deployment_configs/sshpass_deploy.sh
+
+# Complete workflow with commit, push and deploy (requires sshpass)
+./deployment_configs/commit_push_deploy.sh
+```
+
+This minimal approach will:
+1. SSH into the server
+2. Pull the latest code from Git
+3. Install dependencies
+4. Precompile assets
+5. Run migrations
+6. Restart the Rails application
+
+The `commit_push_deploy.sh` script additionally:
+1. Commits your local changes with a custom message
+2. Pushes to your remote Git repository
+3. Then performs the server deployment
+
 For first-time server setup:
 
 ```bash

@@ -1,0 +1,9 @@
+# Production database configuration
+production:
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: aidd_production
+  username: aidd
+  password: <%= ENV["AIDD_DATABASE_PASSWORD"] %>
+  host: localhost

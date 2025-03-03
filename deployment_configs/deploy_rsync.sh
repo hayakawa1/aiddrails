@@ -36,8 +36,8 @@ production:
   encoding: unicode
   database: aidd_production
   pool: 5
-  username: postgres
-  password: <%= ENV['DATABASE_PASSWORD'] %>
+  username: aidd
+  password: aidd_password
   host: localhost
 EOL
 fi

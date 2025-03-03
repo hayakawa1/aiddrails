@@ -1,51 +1,36 @@
-# PostgreSQL. Versions 9.3 and up are supported.
-#
-#   Ensure the PostgreSQL gem is defined in your Gemfile
-#   gem "pg"
-#
+# PostgreSQL configuration
 default: &default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: postgres
-  password:
-  host: localhost
 
 development:
   <<: *default
-  database: aidd_development
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-  <<: *default
-  database: aidd_test
-
-# Store production database on a separate server in production.
-production:
-  primary:
-    <<: *default
-    database: aidd_production
-    username: aidd
-    password: <%= ENV["AIDD_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *default
-    database: aidd_production_cache
-    username: aidd
-    password: <%= ENV["AIDD_DATABASE_PASSWORD"] %>
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *default
-    database: aidd_production_queue
-    username: aidd
-    password: <%= ENV["AIDD_DATABASE_PASSWORD"] %>
-    migrations_paths: db/queue_migrate
+  url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_development' %>
   cable:
     <<: *default
-    database: aidd_production_cable
-    username: aidd
-    password: <%= ENV["AIDD_DATABASE_PASSWORD"] %>
-    migrations_paths: db/cable_migrate
+    url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_development' %>
+  queue:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_development' %>
+
+test:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_test' %>
+  cable:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_test' %>
+  queue:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] || 'postgresql://postgres@localhost/aidd_test' %>
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+  cable:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+  queue:
+    <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
+

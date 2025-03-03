@@ -1,16 +1,15 @@
-version: '3'
-
 services:
   web:
     build: .
     ports:
       - "3000:80"
     environment:
-      - RAILS_ENV=production
+      - RAILS_ENV=development
       - RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp_production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/myapp_development
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - ./storage:/rails/storage
     restart: unless-stopped
@@ -22,8 +21,13 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=myapp_production
+      - POSTGRES_DB=myapp_development
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
