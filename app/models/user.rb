@@ -19,6 +19,14 @@ class User < ApplicationRecord
   has_many :user_skills, dependent: :destroy
   has_many :skills, through: :user_skills
 
+  has_many :likes, dependent: :destroy
+  has_many :liked_jobs, through: :likes, source: :job
+
+  # メッセージ関連
+  has_many :conversations, dependent: :destroy
+  has_many :target_conversations, class_name: 'Conversation', foreign_key: 'target_user_id', dependent: :destroy
+  has_many :messages, foreign_key: 'sender_id', dependent: :destroy
+
   # パスワードをハッシュ化して保存するためのメソッド
   def password=(raw_password)
     if raw_password.present?

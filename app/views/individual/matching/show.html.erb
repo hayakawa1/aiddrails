@@ -1,0 +1,288 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-start mb-6">
+    <h1 class="text-2xl font-bold text-gray-800"><%= @job.title %></h1>
+    <div class="flex items-center space-x-2">
+      <div class="like-button" data-job-id="<%= @job.id %>">
+        <% if @liked %>
+          <button id="unlike-btn" class="text-red-500 hover:text-red-700">
+            <i class="fas fa-heart text-2xl"></i>
+          </button>
+        <% else %>
+          <button id="like-btn" class="text-gray-400 hover:text-red-500">
+            <i class="far fa-heart text-2xl"></i>
+          </button>
+        <% end %>
+      </div>
+      
+      <% 
+        # マッチしている場合にメッセージボタンを表示
+        company_user = @job.company_profile.user
+        matched = company_user.likes.exists?(target_user_id: current_user.id, job_id: @job.id) && 
+                @liked
+        
+        if matched
+          conversation = Conversation.find_by(
+            user_id: company_user.id,
+            target_user_id: current_user.id,
+            job_id: @job.id
+          )
+          
+          if conversation
+      %>
+          <%= link_to individual_message_path(conversation), class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center" do %>
+            <i class="fas fa-comment mr-2"></i> メッセージを見る
+          <% end %>
+      <%    end
+        end 
+      %>
+    </div>
+  </div>
+  
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-2">企業情報</h2>
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <div class="flex items-center mb-2">
+        <span class="font-medium text-gray-600 mr-2">会社名:</span>
+        <span class="text-gray-800"><%= @company.company_name %></span>
+      </div>
+      <% if @company.website_url.present? %>
+        <div class="flex items-center mb-2">
+          <span class="font-medium text-gray-600 mr-2">Webサイト:</span>
+          <a href="<%= @company.website_url %>" target="_blank" class="text-blue-600 hover:text-blue-800">
+            <%= @company.website_url %>
+          </a>
+        </div>
+      <% end %>
+      <% if @company.description.present? %>
+        <div class="mt-2">
+          <span class="font-medium text-gray-600 block mb-1">会社概要:</span>
+          <p class="text-gray-800"><%= @company.description %></p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-2">求人詳細</h2>
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div class="flex items-center">
+          <i class="fas fa-map-marker-alt text-gray-500 mr-2"></i>
+          <span class="font-medium text-gray-600 mr-2">勤務地:</span>
+          <span class="text-gray-800"><%= @job.location.name %></span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-briefcase text-gray-500 mr-2"></i>
+          <span class="font-medium text-gray-600 mr-2">雇用形態:</span>
+          <span class="text-gray-800"><%= @job.employment_type.name %></span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-laptop-house text-gray-500 mr-2"></i>
+          <span class="font-medium text-gray-600 mr-2">勤務形態:</span>
+          <span class="text-gray-800"><%= @job.work_style.name %></span>
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-yen-sign text-gray-500 mr-2"></i>
+          <span class="font-medium text-gray-600 mr-2">給与:</span>
+          <span class="text-gray-800"><%= number_to_currency(@job.salary_min, unit: '万円〜', precision: 0) %></span>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <span class="font-medium text-gray-600 block mb-1">業務内容:</span>
+        <div class="text-gray-800 whitespace-pre-line"><%= @job.description %></div>
+      </div>
+      
+      <% if @job.legal_info.present? %>
+        <div class="mb-4">
+          <span class="font-medium text-gray-600 block mb-1">法的情報:</span>
+          <div class="text-gray-800 whitespace-pre-line"><%= @job.legal_info %></div>
+        </div>
+      <% end %>
+      
+      <div>
+        <span class="font-medium text-gray-600 block mb-2">必要なスキル:</span>
+        <% if @job.job_skills.present? %>
+          <div class="flex flex-wrap gap-2">
+            <% @job.job_skills.includes(:skill).each do |job_skill| %>
+              <span class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                <%= job_skill.skill.name %> (Lv.<%= job_skill.level %>)
+              </span>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-600 italic">特に指定なし</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="flex justify-between mt-8">
+    <%= link_to "戻る", individual_matching_index_path, class: "bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded shadow" %>
+    
+    <% if @liked %>
+      <button id="unlike-btn-bottom" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow">
+        <i class="fas fa-heart mr-1"></i> いいね中
+      </button>
+    <% else %>
+      <button id="like-btn-bottom" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow">
+        <i class="far fa-heart mr-1"></i> いいねする
+      </button>
+    <% end %>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // いいねボタンのイベントリスナー
+  const likeBtn = document.getElementById('like-btn');
+  const likeBtnBottom = document.getElementById('like-btn-bottom');
+  const unlikeBtn = document.getElementById('unlike-btn');
+  const unlikeBtnBottom = document.getElementById('unlike-btn-bottom');
+  const jobId = document.querySelector('.like-button').dataset.jobId;
+  
+  // 上部のいいねボタン
+  if (likeBtn) {
+    likeBtn.addEventListener('click', function() {
+      likeJob(jobId);
+    });
+  }
+  
+  // 下部のいいねボタン
+  if (likeBtnBottom) {
+    likeBtnBottom.addEventListener('click', function() {
+      likeJob(jobId);
+    });
+  }
+  
+  // 上部のいいね解除ボタン
+  if (unlikeBtn) {
+    unlikeBtn.addEventListener('click', function() {
+      unlikeJob(jobId);
+    });
+  }
+  
+  // 下部のいいね解除ボタン
+  if (unlikeBtnBottom) {
+    unlikeBtnBottom.addEventListener('click', function() {
+      unlikeJob(jobId);
+    });
+  }
+  
+  // いいね処理
+  function likeJob(jobId) {
+    fetch(`/individual/matching/${jobId}/like`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        // ボタンの見た目を変更
+        const likeButton = document.querySelector('.like-button');
+        likeButton.innerHTML = `
+          <button id="unlike-btn" class="text-red-500 hover:text-red-700">
+            <i class="fas fa-heart text-2xl"></i>
+          </button>
+        `;
+        
+        // 下部ボタンも変更
+        const bottomBtnContainer = document.querySelector('.flex.justify-between.mt-8');
+        const bottomBtn = bottomBtnContainer.querySelector('button');
+        bottomBtn.outerHTML = `
+          <button id="unlike-btn-bottom" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow">
+            <i class="fas fa-heart mr-1"></i> いいね中
+          </button>
+        `;
+        
+        // イベントリスナーを再設定
+        document.getElementById('unlike-btn').addEventListener('click', function() {
+          unlikeJob(jobId);
+        });
+        
+        document.getElementById('unlike-btn-bottom').addEventListener('click', function() {
+          unlikeJob(jobId);
+        });
+        
+        // マッチした場合はトースト表示
+        if (data.matched) {
+          showMatchToast();
+        }
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+  
+  // いいね解除処理
+  function unlikeJob(jobId) {
+    fetch(`/individual/matching/${jobId}/unlike`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        // ボタンの見た目を変更
+        const likeButton = document.querySelector('.like-button');
+        likeButton.innerHTML = `
+          <button id="like-btn" class="text-gray-400 hover:text-red-500">
+            <i class="far fa-heart text-2xl"></i>
+          </button>
+        `;
+        
+        // 下部ボタンも変更
+        const bottomBtnContainer = document.querySelector('.flex.justify-between.mt-8');
+        const bottomBtn = bottomBtnContainer.querySelector('button');
+        bottomBtn.outerHTML = `
+          <button id="like-btn-bottom" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow">
+            <i class="far fa-heart mr-1"></i> いいねする
+          </button>
+        `;
+        
+        // イベントリスナーを再設定
+        document.getElementById('like-btn').addEventListener('click', function() {
+          likeJob(jobId);
+        });
+        
+        document.getElementById('like-btn-bottom').addEventListener('click', function() {
+          likeJob(jobId);
+        });
+      }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+  
+  // マッチングトースト表示
+  function showMatchToast() {
+    // トースト要素を作成
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center';
+    toast.innerHTML = `
+      <i class="fas fa-check-circle mr-2 text-xl"></i>
+      <div>
+        <div class="font-bold">マッチングしました！</div>
+        <div class="text-sm">企業からもいいねがありました</div>
+      </div>
+      <button class="ml-4 text-white focus:outline-none" onclick="this.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    
+    // トーストをドキュメントに追加
+    document.body.appendChild(toast);
+    
+    // 5秒後に自動的に消える
+    setTimeout(() => {
+      if (document.body.contains(toast)) {
+        toast.remove();
+      }
+    }, 5000);
+  }
+});
+</script> 

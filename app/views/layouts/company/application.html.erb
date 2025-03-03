@@ -31,7 +31,8 @@
             <% if logged_in? %>
               <%= link_to 'プロフィール', company_profile_show_path, class: 'text-gray-700 hover:text-green-500' %>
               <%= link_to '求人管理', company_jobs_path, class: 'text-gray-700 hover:text-green-500' %>
-              <%= link_to 'マッチング', '#', class: 'text-gray-700 hover:text-green-500' %>
+              <%= link_to 'マッチング', company_matching_index_path, class: 'text-gray-700 hover:text-green-500' %>
+              <%= link_to 'メッセージ', company_messages_path, class: 'text-gray-700 hover:text-green-500' %>
               <span class="text-gray-700">
                 <%= current_user.user_id %> (<%= current_user.user_type %>)
               </span>

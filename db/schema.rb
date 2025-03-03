@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_123653) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_company_profiles_on_user_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "target_user_id", null: false
+    t.bigint "job_id", null: false
+    t.string "status", default: "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_id"], name: "index_conversations_on_job_id"
+    t.index ["target_user_id"], name: "index_conversations_on_target_user_id"
+    t.index ["user_id"], name: "index_conversations_on_user_id"
   end
 
   create_table "employment_types", force: :cascade do |t|
@@ -60,7 +72,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
     t.bigint "work_style_id", null: false
     t.bigint "location_id", null: false
     t.integer "salary_min"
-    t.integer "salary_max"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "legal_info"
@@ -70,11 +81,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
     t.index ["work_style_id"], name: "index_jobs_on_work_style_id"
   end
 
+  create_table "likes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "job_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "target_user_id"
+    t.index ["job_id"], name: "index_likes_on_job_id"
+    t.index ["target_user_id"], name: "index_likes_on_target_user_id"
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
   create_table "locations", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.integer "sender_id", null: false
+    t.text "content"
+    t.boolean "read", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
   end
 
   create_table "skills", force: :cascade do |t|
@@ -138,6 +170,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
   end
 
   add_foreign_key "company_profiles", "users"
+  add_foreign_key "conversations", "jobs"
+  add_foreign_key "conversations", "users"
+  add_foreign_key "conversations", "users", column: "target_user_id"
   add_foreign_key "individual_profiles", "users"
   add_foreign_key "job_skills", "jobs"
   add_foreign_key "job_skills", "skills"
@@ -145,6 +180,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_110344) do
   add_foreign_key "jobs", "employment_types"
   add_foreign_key "jobs", "locations"
   add_foreign_key "jobs", "work_styles"
+  add_foreign_key "likes", "jobs"
+  add_foreign_key "likes", "users"
+  add_foreign_key "likes", "users", column: "target_user_id"
+  add_foreign_key "messages", "conversations"
   add_foreign_key "user_employment_types", "employment_types"
   add_foreign_key "user_employment_types", "users"
   add_foreign_key "user_locations", "locations"

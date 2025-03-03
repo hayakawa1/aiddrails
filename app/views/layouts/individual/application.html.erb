@@ -31,6 +31,7 @@
             <% if logged_in? %>
               <%= link_to 'プロフィール', individual_profile_show_path, class: 'text-gray-700 hover:text-blue-500' %>
               <%= link_to 'マッチング', individual_matching_index_path, class: 'text-gray-700 hover:text-blue-500' %>
+              <%= link_to 'メッセージ', individual_messages_path, class: 'text-gray-700 hover:text-blue-500' %>
               <span class="text-gray-700">
                 <%= current_user.user_id %> (<%= current_user.user_type %>)
               </span>

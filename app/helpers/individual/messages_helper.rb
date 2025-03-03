@@ -1,0 +1,2 @@
+module Individual::MessagesHelper
+end

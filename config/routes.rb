@@ -1,9 +1,30 @@
 Rails.application.routes.draw do
   namespace :company do
+    get "matching/index"
+    get "matching/show"
+    get "matching/like"
     resources :jobs
     get "profile/show"
     get "profile/edit"
     patch "profile/update"
+    
+    # マッチング機能
+    resources :matching, only: [:index, :show] do
+      collection do
+        get :search
+      end
+      member do
+        post :like
+        delete :unlike
+      end
+    end
+    
+    # メッセージ機能
+    resources :messages, only: [:index, :show, :create] do
+      collection do
+        get :unread_count
+      end
+    end
     
     # 会社ユーザーのルートパス
     root 'profile#show'
@@ -23,6 +44,19 @@ Rails.application.routes.draw do
     get 'profile/edit'
     patch 'profile/update'
     get 'matching/index'
+    resources :matching, only: [:index, :show] do
+      member do
+        post 'like'
+        delete 'unlike'
+      end
+    end
+    
+    # メッセージ機能
+    resources :messages, only: [:index, :show, :create] do
+      collection do
+        get :unread_count
+      end
+    end
     
     # 個人ユーザーのルートパス
     root 'profile#show'
@@ -44,5 +78,5 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "users#new"
+  root "home#index"
 end

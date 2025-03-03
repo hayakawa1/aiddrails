@@ -18,7 +18,7 @@ module Company::JobsHelper
   end
   
   # 給与の表示形式をフォーマットする
-  def format_salary(min, max)
+  def format_salary(min)
     if min.present?
       "#{min}万円"
     else
