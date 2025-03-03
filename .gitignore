@@ -35,3 +35,4 @@
 
 # Ignore deployment scripts with sensitive information
 /deployment_configs/sshpass_deploy.sh
+/deployment_configs/commit_push_deploy.sh
