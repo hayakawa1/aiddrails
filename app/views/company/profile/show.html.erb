@@ -1,0 +1,56 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">会社プロフィール</h1>
+    <%= link_to "編集", company_profile_edit_path, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+  </div>
+  
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">基本情報</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">ユーザーID</p>
+          <p class="text-lg"><%= @user.user_id %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">種別</p>
+          <p class="text-lg"><%= @user.user_type %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">登録日</p>
+          <p class="text-lg"><%= @user.created_at.strftime('%Y年%m月%d日') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">会社情報</h2>
+      <% if @user.company_profile %>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">会社名</p>
+          <p class="text-lg"><%= @user.company_profile.company_name %></p>
+        </div>
+        <% if @user.company_profile.description.present? %>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">会社概要</p>
+          <p class="text-lg whitespace-pre-wrap"><%= @user.company_profile.description %></p>
+        </div>
+        <% end %>
+        <% if @user.company_profile.website_url.present? %>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">Webサイト</p>
+          <p class="text-lg">
+            <a href="<%= @user.company_profile.website_url %>" target="_blank" class="text-blue-500 hover:underline">
+              <%= @user.company_profile.website_url %>
+            </a>
+          </p>
+        </div>
+        <% end %>
+      <% else %>
+        <p class="text-gray-600">会社情報はまだ設定されていません。</p>
+      <% end %>
+    </div>
+  </div>
+</div>

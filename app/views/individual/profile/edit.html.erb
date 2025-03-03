@@ -1,0 +1,142 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">プロフィール編集</h1>
+  
+  <%= form_with(url: individual_profile_update_path, method: :patch, local: true) do |f| %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">基本情報</h2>
+      
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2">ユーザーID</label>
+        <p class="text-gray-600 mb-2"><%= @user.user_id %></p>
+        <span class="text-xs text-gray-500">ユーザーIDは変更できません</span>
+      </div>
+      
+      <!-- プロフィール情報の編集 -->
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_display_name">表示名 <span class="text-red-500">*</span></label>
+        <%= text_field_tag 'profile[display_name]', @profile.display_name, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "表示名を入力してください", required: true %>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_birth_year">生年（西暦）</label>
+        <%= number_field_tag 'profile[birth_year]', @profile.birth_year, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "例: 1990", min: 1900, max: Date.current.year %>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_bio">自己紹介</label>
+        <%= text_area_tag 'profile[bio]', @profile.bio, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", rows: 5, placeholder: "自己紹介を入力してください（1000文字まで）" %>
+      </div>
+    </div>
+    
+    <!-- 希望条件の編集 -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">希望条件</h2>
+      
+      <!-- 勤務地 -->
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">希望勤務地（複数選択可）</label>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          <% @locations.each do |location| %>
+            <div class="flex items-center">
+              <%= check_box_tag 'location_ids[]', location.id, @user.location_ids.include?(location.id), id: "location_#{location.id}", class: "mr-2" %>
+              <label for="location_<%= location.id %>" class="text-gray-700"><%= location.name %></label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- 希望年収 -->
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="profile_desired_salary">希望年収（万円）</label>
+        <%= number_field_tag 'profile[desired_salary]', @profile.desired_salary, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "例: 500", min: 0, step: 10 %>
+      </div>
+      
+      <!-- 雇用形態 -->
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">希望雇用形態（複数選択可）</label>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <% @employment_types.each do |employment_type| %>
+            <div class="flex items-center">
+              <%= check_box_tag 'employment_type_ids[]', employment_type.id, @user.employment_type_ids.include?(employment_type.id), id: "employment_type_#{employment_type.id}", class: "mr-2" %>
+              <label for="employment_type_<%= employment_type.id %>" class="text-gray-700"><%= employment_type.name %></label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      
+      <!-- 勤務形態 -->
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2">希望勤務形態（複数選択可）</label>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          <% @work_styles.each do |work_style| %>
+            <div class="flex items-center">
+              <%= check_box_tag 'work_style_ids[]', work_style.id, @user.work_style_ids.include?(work_style.id), id: "work_style_#{work_style.id}", class: "mr-2" %>
+              <label for="work_style_<%= work_style.id %>" class="text-gray-700"><%= work_style.name %></label>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
+    <!-- スキル -->
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">スキル（複数選択可）</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% @skills.each do |skill| %>
+          <div class="border rounded p-4 relative">
+            <div class="flex items-start mb-2">
+              <%= check_box_tag 'skill_ids[]', skill.id, @user_skills_hash.key?(skill.id), id: "skill_#{skill.id}", class: "mr-2 mt-1" %>
+              <div>
+                <label for="skill_<%= skill.id %>" class="block font-medium text-gray-700"><%= skill.name %></label>
+                <% if skill.description.present? %>
+                  <p class="text-sm text-gray-600"><%= skill.description %></p>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="pl-6">
+              <label class="block text-gray-700 text-sm font-bold mb-1">レベル</label>
+              <select name="skill_levels[<%= skill.id %>]" class="shadow border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline <%= @user_skills_hash.key?(skill.id) ? '' : 'opacity-50' %>" 
+                      <%= @user_skills_hash.key?(skill.id) ? '' : 'disabled' %>
+                      id="skill_level_<%= skill.id %>">
+                <% (1..5).each do |level| %>
+                  <option value="<%= level %>" <%= @user_skills_hash[skill.id] == level ? 'selected' : '' %>>
+                    <%= level %> - <%= level_description(level) %>
+                  </option>
+                <% end %>
+              </select>
+            </div>
+            
+            <script>
+              document.getElementById('skill_<%= skill.id %>').addEventListener('change', function() {
+                var level_select = document.getElementById('skill_level_<%= skill.id %>');
+                level_select.disabled = !this.checked;
+                level_select.classList.toggle('opacity-50', !this.checked);
+              });
+            </script>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="flex items-center justify-between">
+      <%= f.submit "保存する", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+      <%= link_to "キャンセル", individual_profile_show_path, class: "inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" %>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :head do %>
+  <script>
+    function toggleSkillLevel(skillId, checked) {
+      var levelSelect = document.getElementById('skill_level_' + skillId);
+      levelSelect.disabled = !checked;
+      if (checked) {
+        levelSelect.classList.remove('opacity-50');
+      } else {
+        levelSelect.classList.add('opacity-50');
+      }
+    }
+  </script>
+<% end %> 

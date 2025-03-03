@@ -1,0 +1,38 @@
+<h1 class="text-2xl font-bold text-gray-800 mb-6">会員登録</h1>
+
+<% if flash[:error] %>
+  <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+    <%= flash[:error] %>
+  </div>
+<% end %>
+
+<% if @user.errors.any? %>
+  <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+    <ul class="list-disc pl-5">
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with(model: @user, url: users_path, local: true, class: "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4") do |f| %>
+  <div class="mb-4">
+    <%= f.label :user_id, 'ID', class: "block text-gray-700 text-sm font-bold mb-2" %>
+    <%= f.text_field :user_id, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-4">
+    <%= f.label :password, 'パスワード', class: "block text-gray-700 text-sm font-bold mb-2" %>
+    <%= f.password_field :password, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="mb-6">
+    <%= f.label :user_type, '種別', class: "block text-gray-700 text-sm font-bold mb-2" %>
+    <%= f.select :user_type, ['個人', '法人'], {}, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" %>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <%= f.submit '登録', class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+  </div>
+<% end %>

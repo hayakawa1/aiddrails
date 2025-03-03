@@ -1,0 +1,2 @@
+module Individual::ProfileHelper
+end

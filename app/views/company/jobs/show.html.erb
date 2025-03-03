@@ -1,0 +1,92 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800"><%= @job.title %></h1>
+    <div class="flex space-x-2">
+      <%= link_to "編集", edit_company_job_path(@job), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+      <%= link_to "一覧に戻る", company_jobs_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+    </div>
+  </div>
+  
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">基本情報</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">雇用形態</p>
+          <p class="text-lg"><%= @job.employment_type.name %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">勤務形態</p>
+          <p class="text-lg"><%= @job.work_style.name %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">勤務地</p>
+          <p class="text-lg"><%= @job.location.name %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">年収</p>
+          <p class="text-lg">
+            <% if @job.salary_min.present? %>
+              <%= @job.salary_min %>万円
+            <% else %>
+              未設定
+            <% end %>
+          </p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">作成日</p>
+          <p class="text-lg"><%= @job.created_at.strftime('%Y年%m月%d日') %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">最終更新日</p>
+          <p class="text-lg"><%= @job.updated_at.strftime('%Y年%m月%d日') %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">業務内容と求める人材</h2>
+      <div class="whitespace-pre-wrap text-gray-700"><%= @job.description %></div>
+    </div>
+  </div>
+  
+  <% if @job.legal_info.present? %>
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">職業安定法施行規則に基づく内容</h2>
+      <div class="whitespace-pre-wrap text-gray-700"><%= @job.legal_info %></div>
+    </div>
+  </div>
+  <% end %>
+  
+  <div class="mb-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">必要スキル</h2>
+      <% if @job.job_skills.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @job.job_skills.includes(:skill).each do |job_skill| %>
+            <div class="border rounded p-3">
+              <div class="flex justify-between items-center">
+                <span class="font-medium"><%= job_skill.skill.name %></span>
+                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                  レベル <%= job_skill.level %> - <%= level_description(job_skill.level) %>
+                </span>
+              </div>
+              <% if job_skill.skill.description.present? %>
+                <p class="text-sm text-gray-600 mt-1"><%= job_skill.skill.description %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">必要なスキルは設定されていません</p>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mt-8 flex justify-end">
+    <%= link_to "削除", company_job_path(@job), data: { turbo_method: :delete, turbo_confirm: "求人「#{@job.title}」を削除してもよろしいですか？" }, class: "text-red-500 hover:text-red-700 border border-red-500 hover:border-red-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+  </div>
+</div>

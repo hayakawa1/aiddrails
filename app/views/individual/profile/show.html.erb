@@ -1,0 +1,138 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">プロフィール</h1>
+    <%= link_to 'プロフィールを編集する', individual_profile_edit_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' %>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="mb-6">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">基本情報</h2>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">ユーザーID</p>
+          <p class="text-lg"><%= @user.user_id %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">種別</p>
+          <p class="text-lg"><%= @user.user_type %></p>
+        </div>
+        <div class="mb-4">
+          <p class="text-sm text-gray-500">登録日</p>
+          <p class="text-lg"><%= @user.created_at.strftime('%Y年%m月%d日') %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mb-6">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">プロフィール情報</h2>
+        <% if @user.individual_profile %>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500">表示名</p>
+            <p class="text-lg"><%= @user.individual_profile.display_name %></p>
+          </div>
+          <% if @user.individual_profile.birth_year %>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500">生年</p>
+            <p class="text-lg"><%= @user.individual_profile.birth_year %>年</p>
+          </div>
+          <% end %>
+          <% if @user.individual_profile.bio.present? %>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500">自己紹介</p>
+            <p class="text-lg whitespace-pre-wrap"><%= @user.individual_profile.bio %></p>
+          </div>
+          <% end %>
+        <% else %>
+          <p class="text-gray-600">プロフィール情報はまだ設定されていません。</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mt-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">希望条件</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 勤務地 -->
+        <div>
+          <h3 class="text-lg font-medium mb-2 text-gray-700">希望勤務地</h3>
+          <% if @user.locations.any? %>
+            <ul class="list-disc pl-5">
+              <% @user.locations.each do |location| %>
+                <li><%= location.name %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-gray-600">未設定</p>
+          <% end %>
+        </div>
+        
+        <!-- 希望年収 -->
+        <div>
+          <h3 class="text-lg font-medium mb-2 text-gray-700">希望年収</h3>
+          <% if @user.individual_profile&.desired_salary.present? %>
+            <p class="text-lg"><%= @user.individual_profile.desired_salary %> 万円</p>
+          <% else %>
+            <p class="text-gray-600">未設定</p>
+          <% end %>
+        </div>
+        
+        <!-- 雇用形態 -->
+        <div>
+          <h3 class="text-lg font-medium mb-2 text-gray-700">希望雇用形態</h3>
+          <% if @user.employment_types.any? %>
+            <ul class="list-disc pl-5">
+              <% @user.employment_types.each do |employment_type| %>
+                <li><%= employment_type.name %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-gray-600">未設定</p>
+          <% end %>
+        </div>
+        
+        <!-- 勤務形態 -->
+        <div>
+          <h3 class="text-lg font-medium mb-2 text-gray-700">希望勤務形態</h3>
+          <% if @user.work_styles.any? %>
+            <ul class="list-disc pl-5">
+              <% @user.work_styles.each do |work_style| %>
+                <li><%= work_style.name %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            <p class="text-gray-600">未設定</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- スキル -->
+  <div class="mt-6">
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">スキル</h2>
+      <% if @user.user_skills.any? %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <% @user.user_skills.includes(:skill).each do |user_skill| %>
+            <div class="border rounded p-3">
+              <div class="flex justify-between items-center">
+                <span class="font-medium"><%= user_skill.skill.name %></span>
+                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+                  レベル <%= user_skill.level %> - <%= level_description(user_skill.level) %>
+                </span>
+              </div>
+              <% if user_skill.skill.description.present? %>
+                <p class="text-sm text-gray-600 mt-1"><%= user_skill.skill.description %></p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-600">スキルは登録されていません</p>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Myapp" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-gray-100">
+    <nav class="bg-white shadow-md">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="font-bold text-xl text-blue-600">MyApp</div>
+        <div>
+          <% if logged_in? %>
+            <span class="mr-4 text-gray-700">
+              <%= current_user.user_id %> (<%= current_user.user_type %>)
+            </span>
+            <%= link_to 'ログアウト', logout_path, data: { turbo_method: :delete }, class: 'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline' %>
+          <% else %>
+            <%= link_to 'ログイン', login_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline mr-2' %>
+            <%= link_to '会員登録', signup_path, class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline' %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+      <% flash.each do |message_type, message| %>
+        <% alert_class = message_type == 'success' ? 'bg-green-100 border-green-500 text-green-700' : 'bg-red-100 border-red-500 text-red-700' %>
+        <div class="<%= alert_class %> border-l-4 p-4 mb-4 rounded">
+          <%= message %>
+        </div>
+      <% end %>
+      
+      <%= yield %>
+    </div>
+  </body>
+</html>

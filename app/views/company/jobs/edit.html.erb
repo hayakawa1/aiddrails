@@ -1,0 +1,98 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6">求人編集</h1>
+  
+  <%= form_with(model: [:company, @job], local: true) do |f| %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">基本情報</h2>
+      
+      <div class="mb-4">
+        <%= f.label :title, "求人タイトル", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <span class="text-red-500">*</span>
+        <%= f.text_field :title, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "求人のタイトルを入力してください", required: true %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :description, "業務内容と求める人材", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <span class="text-red-500">*</span>
+        <%= f.text_area :description, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "業務内容、求める人材像などを入力してください", rows: 10, required: true %>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="mb-4">
+          <%= f.label :employment_type_id, "雇用形態", class: "block text-gray-700 text-sm font-bold mb-2" %>
+          <span class="text-red-500">*</span>
+          <%= f.collection_select :employment_type_id, @employment_types, :id, :name, { prompt: "選択してください" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true } %>
+        </div>
+        
+        <div class="mb-4">
+          <%= f.label :work_style_id, "勤務形態", class: "block text-gray-700 text-sm font-bold mb-2" %>
+          <span class="text-red-500">*</span>
+          <%= f.collection_select :work_style_id, @work_styles, :id, :name, { prompt: "選択してください" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true } %>
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :location_id, "勤務地", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <span class="text-red-500">*</span>
+        <%= f.collection_select :location_id, @locations, :id, :name, { prompt: "選択してください" }, { class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", required: true } %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :salary_min, "年収（万円）", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= f.number_field :salary_min, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "例: 400", min: 0, step: 10 %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :legal_info, "職業安定法施行規則に基づく内容", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= f.text_area :legal_info, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "職業安定法施行規則に基づく情報を入力してください", rows: 5 %>
+      </div>
+    </div>
+    
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">必要スキル</h2>
+      <p class="text-gray-600 mb-4">求人に必要なスキルとそのレベルを選択してください</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <% @skills.each do |skill| %>
+          <div class="border rounded p-4 relative">
+            <div class="flex items-start mb-2">
+              <%= check_box_tag 'skill_ids[]', skill.id, @job_skills_hash.key?(skill.id), id: "skill_#{skill.id}", class: "mr-2 mt-1" %>
+              <div>
+                <label for="skill_<%= skill.id %>" class="block font-medium text-gray-700"><%= skill.name %></label>
+                <% if skill.description.present? %>
+                  <p class="text-sm text-gray-600"><%= skill.description %></p>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="pl-6">
+              <label class="block text-gray-700 text-sm font-bold mb-1">レベル</label>
+              <select name="skill_levels[<%= skill.id %>]" class="shadow border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline <%= @job_skills_hash.key?(skill.id) ? '' : 'opacity-50' %>" 
+                      <%= @job_skills_hash.key?(skill.id) ? '' : 'disabled' %>
+                      id="skill_level_<%= skill.id %>">
+                <% (1..5).each do |level| %>
+                  <option value="<%= level %>" <%= @job_skills_hash[skill.id] == level ? 'selected' : '' %>>
+                    <%= level %> - <%= level_description(level) %>
+                  </option>
+                <% end %>
+              </select>
+            </div>
+            
+            <script>
+              document.getElementById('skill_<%= skill.id %>').addEventListener('change', function() {
+                var level_select = document.getElementById('skill_level_<%= skill.id %>');
+                level_select.disabled = !this.checked;
+                level_select.classList.toggle('opacity-50', !this.checked);
+              });
+            </script>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="flex items-center justify-between mt-6">
+      <%= f.submit "求人を更新する", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer" %>
+      <%= link_to "キャンセル", company_job_path(@job), class: "text-gray-600 hover:text-gray-900" %>
+    </div>
+  <% end %>
+</div>

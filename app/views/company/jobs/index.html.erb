@@ -1,0 +1,57 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">求人管理</h1>
+    <%= link_to "新規求人作成", new_company_job_path, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" %>
+  </div>
+  
+  <% if @jobs.any? %>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="py-2 px-4 border-b text-left">求人タイトル</th>
+            <th class="py-2 px-4 border-b text-left">雇用形態</th>
+            <th class="py-2 px-4 border-b text-left">勤務地</th>
+            <th class="py-2 px-4 border-b text-left">年収</th>
+            <th class="py-2 px-4 border-b text-left">作成日</th>
+            <th class="py-2 px-4 border-b text-left">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @jobs.each do |job| %>
+            <tr class="hover:bg-gray-50">
+              <td class="py-2 px-4 border-b">
+                <%= link_to job.title, company_job_path(job), class: "text-blue-600 hover:text-blue-800 font-medium" %>
+              </td>
+              <td class="py-2 px-4 border-b"><%= job.employment_type.name %></td>
+              <td class="py-2 px-4 border-b"><%= job.location.name %></td>
+              <td class="py-2 px-4 border-b">
+                <% if job.salary_min.present? && job.salary_max.present? %>
+                  <%= job.salary_min %>〜<%= job.salary_max %>万円
+                <% elsif job.salary_min.present? %>
+                  <%= job.salary_min %>万円〜
+                <% elsif job.salary_max.present? %>
+                  〜<%= job.salary_max %>万円
+                <% else %>
+                  未設定
+                <% end %>
+              </td>
+              <td class="py-2 px-4 border-b"><%= job.created_at.strftime('%Y/%m/%d') %></td>
+              <td class="py-2 px-4 border-b">
+                <div class="flex space-x-2">
+                  <%= link_to "編集", edit_company_job_path(job), class: "text-blue-500 hover:text-blue-700" %>
+                  <%= link_to "削除", company_job_path(job), data: { turbo_method: :delete, turbo_confirm: "求人「#{job.title}」を削除してもよろしいですか？" }, class: "text-red-500 hover:text-red-700" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-gray-50 rounded-lg p-6 text-center">
+      <p class="text-gray-600 mb-4">まだ求人が登録されていません</p>
+      <%= link_to "最初の求人を作成する", new_company_job_path, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline inline-block" %>
+    </div>
+  <% end %>
+</div>
