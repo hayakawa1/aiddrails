@@ -36,16 +36,6 @@ cat config/master.key
 
 この出力をコピーして、GitHubのシークレットとして保存します。
 
-### 4. PRODUCTION_KEY (オプション)
-
-本番環境用の追加キーがある場合は、以下のコマンドで内容を確認できます：
-
-```bash
-cat config/credentials/production.key
-```
-
-この出力をコピーして、GitHubのシークレットとして保存します。
-
 ## 手動デプロイのトリガー方法
 
 1. GitHubリポジトリの「Actions」タブに移動します

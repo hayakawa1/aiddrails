@@ -32,10 +32,6 @@ jobs:
           mkdir -p config/credentials
           echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
           chmod 600 config/master.key
-          if [ ! -z "${{ secrets.PRODUCTION_KEY }}" ]; then
-            echo "${{ secrets.PRODUCTION_KEY }}" > config/credentials/production.key
-            chmod 600 config/credentials/production.key
-          fi
 
       - name: Verify SSH connection
         run: ssh -T -o StrictHostKeyChecking=accept-new root@45.76.194.174 'echo "SSH connection successful"'
@@ -43,7 +39,6 @@ jobs:
       - name: Deploy with Capistrano
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          PRODUCTION_KEY: ${{ secrets.PRODUCTION_KEY }}
         run: |
           bundle install
           bundle exec cap production deploy
@@ -52,4 +47,3 @@ jobs:
         if: always()
         run: |
           rm -f config/master.key
-          rm -f config/credentials/production.key

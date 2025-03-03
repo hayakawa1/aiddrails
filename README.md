@@ -43,7 +43,6 @@ This application is configured for automated deployment using GitHub Actions and
    - `SSH_PRIVATE_KEY`: SSH private key for server access
    - `KNOWN_HOSTS`: Server SSH fingerprints
    - `RAILS_MASTER_KEY`: Rails master key from `config/master.key`
-   - `PRODUCTION_KEY`: Production environment key from `config/credentials/production.key` (if applicable)
 
 ### Deployment Process
 
