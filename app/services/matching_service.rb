@@ -27,7 +27,7 @@ class MatchingService
     
     # 希望年収でフィルタリング
     if individual_profile.desired_salary.present?
-      jobs = jobs.where('salary_min >= ?', individual_profile.desired_salary * 0.9)
+      jobs = jobs.where('salary >= ?', individual_profile.desired_salary * 0.9)
     end
     
     # ユーザーのスキルレベル以下の求人を選択
@@ -88,8 +88,8 @@ class MatchingService
     end
     
     # 給与でフィルタリング
-    if job.salary_min.present?
-      users = users.where('individual_profiles.desired_salary <= ?', job.salary_min * 1.1)
+    if job.salary.present?
+      users = users.where('individual_profiles.desired_salary <= ?', job.salary * 1.1)
     end
     
     # 求人が要求するスキルを持つユーザーをフィルタリング
@@ -142,8 +142,8 @@ class MatchingService
     end
     
     # 給与のマッチ（20点）
-    if individual_profile.desired_salary.present? && job.salary_min.present?
-      salary_ratio = job.salary_min.to_f / individual_profile.desired_salary.to_f
+    if individual_profile.desired_salary.present? && job.salary.present?
+      salary_ratio = job.salary.to_f / individual_profile.desired_salary.to_f
       if salary_ratio >= 0.9 && salary_ratio <= 1.1
         condition_score += 20
       elsif salary_ratio >= 0.8 && salary_ratio <= 1.2

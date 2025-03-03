@@ -26,8 +26,8 @@
         <div class="mb-4">
           <p class="text-sm text-gray-500">年収</p>
           <p class="text-lg">
-            <% if @job.salary_min.present? %>
-              <%= @job.salary_min %>万円
+            <% if @job.salary.present? %>
+              <%= @job.salary %>万円
             <% else %>
               未設定
             <% end %>

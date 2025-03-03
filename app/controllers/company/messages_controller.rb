@@ -1,6 +1,7 @@
 class Company::MessagesController < ApplicationController
   before_action :ensure_company_user
   before_action :set_conversation, only: [:show, :create]
+  layout 'company/application'
   
   def index
     @user = current_user

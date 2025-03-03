@@ -1,6 +1,7 @@
 class Individual::MessagesController < ApplicationController
   before_action :ensure_individual_user
   before_action :set_conversation, only: [:show, :create]
+  layout 'individual/application'
   
   def index
     @user = current_user

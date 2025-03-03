@@ -26,8 +26,8 @@
               <td class="py-2 px-4 border-b"><%= job.employment_type.name %></td>
               <td class="py-2 px-4 border-b"><%= job.location.name %></td>
               <td class="py-2 px-4 border-b">
-                <% if job.salary_min.present? %>
-                  <%= job.salary_min %>万円
+                <% if job.salary.present? %>
+                  <%= job.salary %>万円
                 <% else %>
                   未設定
                 <% end %>

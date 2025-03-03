@@ -47,7 +47,7 @@
           <div class="flex items-center">
             <i class="fas fa-yen-sign text-gray-500 mr-2"></i>
             <span class="font-medium text-gray-600 mr-2">給与:</span>
-            <span class="text-gray-800"><%= number_to_currency(@selected_job.salary_min, unit: '万円〜', precision: 0) %></span>
+            <span class="text-gray-800"><%= number_to_currency(@selected_job.salary, unit: '', precision: 0) %> 万円</span>
           </div>
         </div>
       </div>

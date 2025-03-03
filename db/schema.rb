@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_123653) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_03_135649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,7 +71,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_123653) do
     t.bigint "employment_type_id", null: false
     t.bigint "work_style_id", null: false
     t.bigint "location_id", null: false
-    t.integer "salary_min"
+    t.integer "salary"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "legal_info"

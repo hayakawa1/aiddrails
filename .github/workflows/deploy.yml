@@ -1,0 +1,38 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]  # mainブランチにプッシュされたときに実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 全履歴を取得
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.7
+          bundler-cache: true
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # GitHubのSecretsに登録したSSH秘密鍵
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}  # GitHubのSecretsに登録したknown_hosts
+          if_key_exists: replace
+
+      - name: Add known hosts
+        run: |
+          echo "45.76.194.174 ssh-rsa $(ssh-keyscan -t rsa 45.76.194.174 | cut -d' ' -f2-)" >> ~/.ssh/known_hosts
+
+      - name: Deploy with Capistrano
+        env:
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+          PRODUCTION_KEY: ${{ secrets.PRODUCTION_KEY }}
+        run: |
+          bundle install
+          bundle exec cap production deploy

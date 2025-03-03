@@ -27,7 +27,7 @@ namespace :matching do
           puts "勤務地: #{job.location.name}"
           puts "雇用形態: #{job.employment_type.name}"
           puts "勤務形態: #{job.work_style.name}"
-          puts "年収: #{job.salary_min}万円"
+          puts "年収: #{job.salary}万円"
           
           if job.job_skills.any?
             puts "求めるスキル:"
@@ -198,7 +198,7 @@ namespace :matching do
       
       # 5. 年収条件を加える
       if individual_profile.desired_salary.present?
-        salary_jobs = basic_jobs.where('salary_min >= ?', individual_profile.desired_salary)
+        salary_jobs = basic_jobs.where('salary >= ?', individual_profile.desired_salary)
         puts "基本条件＋年収条件: #{salary_jobs.count}件"
         if salary_jobs.empty?
           puts "  年収条件を満たす求人がありません。希望年収の設定を確認してください。"

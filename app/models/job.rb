@@ -10,7 +10,7 @@ class Job < ApplicationRecord
   
   validates :title, presence: true
   validates :description, presence: true
-  validates :salary_min, presence: true, numericality: { greater_than: 0 }
+  validates :salary, presence: true, numericality: { greater_than: 0 }
   
   # アクティブな（有効な）求人のみを取得するスコープ
   # デフォルトではすべての求人をアクティブとみなす
