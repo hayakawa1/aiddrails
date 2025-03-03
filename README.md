@@ -54,9 +54,36 @@ This application is configured for automated deployment using GitHub Actions and
 
 If you need to deploy manually without GitHub Actions:
 
+#### Option 1: Using Capistrano
+
 ```bash
 # From your local machine
 bundle exec cap production deploy
+```
+
+#### Option 2: Using rsync (Simpler Alternative)
+
+A simpler deployment option using rsync is available:
+
+```bash
+# From your local machine
+./deployment_configs/deploy_rsync.sh
+```
+
+This script will:
+1. Create necessary directories on the server
+2. Copy configuration files
+3. Sync application code
+4. Install dependencies
+5. Precompile assets
+6. Run database migrations
+7. Restart the application
+
+For first-time server setup:
+
+```bash
+# Run this on the server
+./deployment_configs/server_setup.sh
 ```
 
 ### Server Setup
