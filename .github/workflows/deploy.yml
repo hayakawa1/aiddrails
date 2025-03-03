@@ -3,12 +3,14 @@ name: Deploy to Production
 on:
   push:
     branches: [ main ]  # mainブランチにプッシュされたときに実行
+  workflow_dispatch:    # 手動実行も可能に
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # 全履歴を取得
 
@@ -25,9 +27,18 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}  # GitHubのSecretsに登録したknown_hosts
           if_key_exists: replace
 
-      - name: Add known hosts
+      - name: Setup deployment files
         run: |
-          echo "45.76.194.174 ssh-rsa $(ssh-keyscan -t rsa 45.76.194.174 | cut -d' ' -f2-)" >> ~/.ssh/known_hosts
+          mkdir -p config/credentials
+          echo "${{ secrets.RAILS_MASTER_KEY }}" > config/master.key
+          chmod 600 config/master.key
+          if [ ! -z "${{ secrets.PRODUCTION_KEY }}" ]; then
+            echo "${{ secrets.PRODUCTION_KEY }}" > config/credentials/production.key
+            chmod 600 config/credentials/production.key
+          fi
+
+      - name: Verify SSH connection
+        run: ssh -T -o StrictHostKeyChecking=accept-new root@45.76.194.174 'echo "SSH connection successful"'
 
       - name: Deploy with Capistrano
         env:
@@ -36,3 +47,9 @@ jobs:
         run: |
           bundle install
           bundle exec cap production deploy
+
+      - name: Cleanup sensitive files
+        if: always()
+        run: |
+          rm -f config/master.key
+          rm -f config/credentials/production.key
