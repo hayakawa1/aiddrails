@@ -2,7 +2,7 @@
 lock "~> 3.19.2"
 
 set :application, "aidd"
-set :repo_url, "git@github.com:yourusername/aidd.git" # GitHubリポジトリURLを実際のものに変更してください
+set :repo_url, "https://github.com/hayakawa1/aiddrails.git"
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
