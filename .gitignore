@@ -40,3 +40,4 @@
 /deployment_configs/simple_password_deploy.sh
 /deployment_configs/check_logs.sh
 /deployment_configs/fix_500_error.sh
+/deployment_configs/docker_run.sh
