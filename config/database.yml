@@ -28,15 +28,18 @@ production:
   <<: *default
   database: ubuntu_production
   username: ubuntu
+  password: ubuntu
   host: localhost
   cable:
     <<: *default
     database: ubuntu_production
     username: ubuntu
+    password: ubuntu
     host: localhost
   queue:
     <<: *default
     database: ubuntu_production
     username: ubuntu
+    password: ubuntu
     host: localhost
 
