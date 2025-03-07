@@ -14,11 +14,11 @@ echo -e "${GREEN}Deploying to ${REMOTE_HOST}...${NC}"
 
 # リモートサーバーでの処理
 echo -e "${GREEN}Running remote commands...${NC}"
-ssh ${REMOTE_USER}@${REMOTE_HOST} "cd ${REMOTE_DIR} && \
-    git pull origin main && \
-    bundle install --without development test && \
-    RAILS_ENV=production bundle exec rails assets:precompile && \
-    RAILS_ENV=production bundle exec rails db:migrate && \
-    sudo systemctl restart puma"
+cd ~/rails/myapp && \
+git pull origin main && \
+bundle install --without development test && \
+RAILS_ENV=production bundle exec rails assets:precompile && \
+RAILS_ENV=production bundle exec rails db:migrate && \
+sudo systemctl restart puma
 
 echo -e "${GREEN}Deployment completed!${NC}" 
