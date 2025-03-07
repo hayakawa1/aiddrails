@@ -11,13 +11,6 @@ environment ENV.fetch("RAILS_ENV") { "production" }
 pidfile "#{app_dir}/tmp/pids/puma.pid"
 state_path "#{app_dir}/tmp/pids/puma.state"
 
-# SSL設定
-ssl_bind '0.0.0.0', '443', {
-  key: "/etc/letsencrypt/live/aidd.work/privkey.pem",
-  cert: "/etc/letsencrypt/live/aidd.work/fullchain.pem",
-  verify_mode: 'none'
-}
-
 # ソケットファイル
 bind "unix://#{app_dir}/tmp/sockets/puma.sock"
 
