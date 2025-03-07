@@ -35,7 +35,7 @@ class Company::MatchingController < ApplicationController
     @individual_profile = @user.individual_profile
     @job_id = params[:job_id]
     @job = Job.find(@job_id) if @job_id.present?
-    @liked = current_user.likes.exists?(user_id: @user.id, job_id: @job_id)
+    @liked = current_user.likes.exists?(target_user_id: @user.id, job_id: @job_id)
     
     # ユーザーのスキル情報を取得
     @user_skills = @user.user_skills.includes(:skill)
@@ -55,14 +55,21 @@ class Company::MatchingController < ApplicationController
     # すでにいいねしているか確認
     if @current_user.likes.exists?(target_user_id: @target_user.id, job_id: @job.id)
       # すでにいいねしている場合は何もしない
+      Rails.logger.info "Already liked: user_id=#{@current_user.id}, target_user_id=#{@target_user.id}, job_id=#{@job.id}"
       render json: { status: 'already_liked' }
       return
     end
     
     # いいねを作成
-    like = Like.new(user: @current_user, target_user: @target_user, job: @job)
+    like = Like.new(
+      user: @current_user,
+      target_user: @target_user,
+      job: @job
+    )
     
     if like.save
+      Rails.logger.info "Like created: user_id=#{@current_user.id}, target_user_id=#{@target_user.id}, job_id=#{@job.id}"
+      
       # マッチしたかどうかを確認（個人側もいいねしているか）
       matched = @target_user.likes.exists?(job_id: @job.id)
       
@@ -74,6 +81,7 @@ class Company::MatchingController < ApplicationController
           target_user_id: @target_user.id,
           job_id: @job.id
         )
+        Rails.logger.info "Match found and conversation created: conversation_id=#{conversation.id}"
       end
       
       render json: { 
@@ -82,7 +90,11 @@ class Company::MatchingController < ApplicationController
         conversation_id: (matched ? conversation.id : nil)
       }
     else
-      render json: { status: 'error', message: like.errors.full_messages.join(', ') }, status: :unprocessable_entity
+      Rails.logger.error "Failed to create like: #{like.errors.full_messages.join(', ')}"
+      render json: { 
+        status: 'error', 
+        message: like.errors.full_messages.join(', ') 
+      }, status: :unprocessable_entity
     end
   end
   
