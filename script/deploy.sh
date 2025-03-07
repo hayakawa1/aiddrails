@@ -14,4 +14,7 @@ bundle config set --local without 'development test' && \
 bundle install && \
 bundle exec rails assets:precompile && \
 bundle exec rails db:migrate && \
-systemctl restart puma 
+if [ -f tmp/pids/puma.pid ]; then
+  kill $(cat tmp/pids/puma.pid)
+fi && \
+bundle exec puma -C config/puma_production.rb 
