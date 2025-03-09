@@ -6,12 +6,26 @@ class Company::MatchingController < ApplicationController
   def index
     @user = current_user
     @company_profile = @user.company_profile
+    
+    if @company_profile.nil?
+      # 企業プロファイルが存在しない場合はプロファイル編集ページへリダイレクト
+      flash[:alert] = "企業プロファイルを作成してください"
+      redirect_to company_profile_edit_path and return
+    end
+    
     @jobs = @company_profile.jobs
   end
   
   def search
     @user = current_user
     @company_profile = @user.company_profile
+    
+    if @company_profile.nil?
+      # 企業プロファイルが存在しない場合はプロファイル編集ページへリダイレクト
+      flash[:alert] = "企業プロファイルを作成してください"
+      redirect_to company_profile_edit_path and return
+    end
+    
     @jobs = @company_profile.jobs
     
     @selected_job_id = params[:job_id]
