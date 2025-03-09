@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>印刷用請求書</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <style>
+      body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
+      
+      .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+        border: 1px solid #ddd;
+        padding: 30px;
+      }
+      
+      .invoice-header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 20px;
+      }
+      
+      .invoice-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+      
+      .invoice-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+      }
+      
+      .invoice-meta-item {
+        flex-basis: 33%;
+      }
+      
+      .invoice-label {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      
+      .invoice-content {
+        margin-bottom: 30px;
+      }
+      
+      .invoice-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+      }
+      
+      .invoice-table th {
+        background-color: #f5f5f5;
+        padding: 10px;
+        text-align: left;
+        font-weight: bold;
+        border-bottom: 2px solid #ddd;
+      }
+      
+      .invoice-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .invoice-total {
+        text-align: right;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        border-top: 2px solid #eee;
+        padding-top: 10px;
+      }
+      
+      .invoice-footer {
+        margin-top: 50px;
+        font-size: 12px;
+        text-align: center;
+        color: #777;
+      }
+      
+      .print-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4a69bd;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+      
+      @media print {
+        .no-print {
+          display: none;
+        }
+        body {
+          padding: 0;
+        }
+        .invoice-container {
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div class="no-print" style="text-align: center; margin-bottom: 20px;">
+      <button class="print-button" onclick="window.print()">印刷する</button>
+      <a href="<%= company_invoices_path %>" style="display: inline-block; margin-left: 10px;">一覧に戻る</a>
+    </div>
+    
+    <%= yield %>
+  </body>
+</html> 

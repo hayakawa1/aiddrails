@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       member do
         patch :mark_as_paid
         get :download_pdf
+        get :print_preview
       end
     end
     

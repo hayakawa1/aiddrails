@@ -1,0 +1,86 @@
+<div class="invoice-container">
+  <div class="invoice-header">
+    <div class="invoice-title">請求書</div>
+    <div>Invoice No: <%= @invoice.id %></div>
+  </div>
+  
+  <div class="invoice-meta">
+    <div class="invoice-meta-item">
+      <div class="invoice-label">請求日:</div>
+      <div><%= @invoice.occurred_at.strftime('%Y年%m月%d日') %></div>
+      <div class="invoice-label" style="margin-top: 10px;">支払期限:</div>
+      <div><%= (@invoice.occurred_at + 30.days).strftime('%Y年%m月%d日') %></div>
+    </div>
+    
+    <div class="invoice-meta-item">
+      <div class="invoice-label">請求先:</div>
+      <div><%= @invoice.company_user.company_profile.company_name %> 御中</div>
+    </div>
+    
+    <div class="invoice-meta-item">
+      <div class="invoice-label">請求元:</div>
+      <div>AIDD株式会社</div>
+      <div>〒100-0001 東京都千代田区1-1-1</div>
+      <div>TEL: 03-1234-5678</div>
+      <div>Email: info@aidd.example.com</div>
+    </div>
+  </div>
+  
+  <div class="invoice-content">
+    <h3>請求内容</h3>
+    
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>項目</th>
+          <th>詳細</th>
+          <th style="text-align: right;">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>マッチング手数料</td>
+          <td>
+            求人: <%= @invoice.job.title %><br>
+            求職者: <%= @invoice.individual_user.individual_profile&.display_name || @invoice.individual_user.user_id %><br>
+            マッチング成立日: <%= @invoice.occurred_at.strftime('%Y年%m月%d日') %>
+          </td>
+          <td style="text-align: right;"><%= number_to_currency(@invoice.amount, unit: '¥', precision: 0) %></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="invoice-total">
+      合計金額: <%= number_to_currency(@invoice.amount, unit: '¥', precision: 0) %>（税込）
+    </div>
+  </div>
+  
+  <div class="invoice-content">
+    <h3>お振込先</h3>
+    <div>銀行名: AIサービス銀行 本店</div>
+    <div>口座種別: 普通口座</div>
+    <div>口座番号: 1234567</div>
+    <div>口座名義: カ）エーアイディーディー</div>
+  </div>
+  
+  <div class="invoice-content">
+    <h3>備考</h3>
+    <ol>
+      <li>この度は弊社サービスをご利用いただき、誠にありがとうございます。</li>
+      <li>お支払いは請求書発行日より30日以内にお願いいたします。</li>
+      <li>振込手数料は貴社負担でお願いいたします。</li>
+      <li>ご不明な点がございましたら、下記までお問い合わせください。</li>
+      <li>お問い合わせ先: support@aidd.example.com</li>
+    </ol>
+  </div>
+  
+  <% if @invoice.paid %>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); opacity: 0.3; font-size: 72px; color: #ff0000; font-weight: bold; border: 5px solid #ff0000; padding: 20px;">
+      支払済
+    </div>
+  <% end %>
+  
+  <div class="invoice-footer">
+    ※この請求書は電子的に発行されています。
+  </div>
+</div> 
