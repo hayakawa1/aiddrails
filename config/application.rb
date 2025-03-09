@@ -25,6 +25,8 @@ module Myapp
     # in config/environments, which are processed later.
     #
     # config.time_zone = "Central Time (US & Canada)"
+    config.time_zone = "Tokyo"  # 日本時間（JST）を設定
+    config.active_record.default_timezone = :local  # DBの時間も現地時間に設定
     # config.eager_load_paths << Rails.root.join("extras")
     
     # ホスト設定
