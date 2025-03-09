@@ -30,5 +30,8 @@ module Myapp
     # ホスト設定
     config.hosts << "aidd.work"
     config.hosts << "www.aidd.work"
+    
+    # Tailwind CSS設定
+    config.assets.paths << Rails.root.join("app/assets/tailwind")
   end
 end
