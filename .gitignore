@@ -41,3 +41,7 @@
 /deployment_configs/check_logs.sh
 /deployment_configs/fix_500_error.sh
 /deployment_configs/docker_run.sh
+.ssh/
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

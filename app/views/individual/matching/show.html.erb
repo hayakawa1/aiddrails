@@ -133,156 +133,140 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // いいねボタンのイベントリスナー
+function setupEventListeners() {
   const likeBtn = document.getElementById('like-btn');
   const likeBtnBottom = document.getElementById('like-btn-bottom');
   const unlikeBtn = document.getElementById('unlike-btn');
   const unlikeBtnBottom = document.getElementById('unlike-btn-bottom');
-  const jobId = document.querySelector('.like-button').dataset.jobId;
-  
+  const jobId = document.querySelector('.like-button')?.dataset.jobId;
+
+  if (!jobId) return;
+
   // 上部のいいねボタン
   if (likeBtn) {
-    likeBtn.addEventListener('click', function() {
-      likeJob(jobId);
-    });
+    likeBtn.removeEventListener('click', () => likeJob(jobId));
+    likeBtn.addEventListener('click', () => likeJob(jobId));
   }
   
   // 下部のいいねボタン
   if (likeBtnBottom) {
-    likeBtnBottom.addEventListener('click', function() {
-      likeJob(jobId);
-    });
+    likeBtnBottom.removeEventListener('click', () => likeJob(jobId));
+    likeBtnBottom.addEventListener('click', () => likeJob(jobId));
   }
   
   // 上部のいいね解除ボタン
   if (unlikeBtn) {
-    unlikeBtn.addEventListener('click', function() {
-      unlikeJob(jobId);
-    });
+    unlikeBtn.removeEventListener('click', () => unlikeJob(jobId));
+    unlikeBtn.addEventListener('click', () => unlikeJob(jobId));
   }
   
   // 下部のいいね解除ボタン
   if (unlikeBtnBottom) {
-    unlikeBtnBottom.addEventListener('click', function() {
-      unlikeJob(jobId);
-    });
+    unlikeBtnBottom.removeEventListener('click', () => unlikeJob(jobId));
+    unlikeBtnBottom.addEventListener('click', () => unlikeJob(jobId));
   }
+}
+
+document.addEventListener('DOMContentLoaded', setupEventListeners);
+document.addEventListener('turbo:load', setupEventListeners);
+
+// いいね処理
+function likeJob(jobId) {
+  fetch(`/individual/matching/${jobId}/like`, {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      updateButtons(jobId, true);
+      if (data.matched) {
+        showMatchToast();
+      }
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// いいね解除処理
+function unlikeJob(jobId) {
+  fetch(`/individual/matching/${jobId}/unlike`, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      updateButtons(jobId, false);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// ボタンの更新処理
+function updateButtons(jobId, isLiked) {
+  const likeButton = document.querySelector('.like-button');
+  const bottomBtnContainer = document.querySelector('.flex.justify-between.mt-8');
   
-  // いいね処理
-  function likeJob(jobId) {
-    fetch(`/individual/matching/${jobId}/like`, {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        // ボタンの見た目を変更
-        const likeButton = document.querySelector('.like-button');
-        likeButton.innerHTML = `
-          <button id="unlike-btn" class="text-red-500 hover:text-red-700">
-            <i class="fas fa-heart text-2xl"></i>
-          </button>
-        `;
-        
-        // 下部ボタンも変更
-        const bottomBtnContainer = document.querySelector('.flex.justify-between.mt-8');
-        const bottomBtn = bottomBtnContainer.querySelector('button');
-        bottomBtn.outerHTML = `
-          <button id="unlike-btn-bottom" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow">
-            <i class="fas fa-heart mr-1"></i> いいね中
-          </button>
-        `;
-        
-        // イベントリスナーを再設定
-        document.getElementById('unlike-btn').addEventListener('click', function() {
-          unlikeJob(jobId);
-        });
-        
-        document.getElementById('unlike-btn-bottom').addEventListener('click', function() {
-          unlikeJob(jobId);
-        });
-        
-        // マッチした場合はトースト表示
-        if (data.matched) {
-          showMatchToast();
-        }
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-  
-  // いいね解除処理
-  function unlikeJob(jobId) {
-    fetch(`/individual/matching/${jobId}/unlike`, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        // ボタンの見た目を変更
-        const likeButton = document.querySelector('.like-button');
-        likeButton.innerHTML = `
-          <button id="like-btn" class="text-gray-400 hover:text-red-500">
-            <i class="far fa-heart text-2xl"></i>
-          </button>
-        `;
-        
-        // 下部ボタンも変更
-        const bottomBtnContainer = document.querySelector('.flex.justify-between.mt-8');
-        const bottomBtn = bottomBtnContainer.querySelector('button');
-        bottomBtn.outerHTML = `
-          <button id="like-btn-bottom" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow">
-            <i class="far fa-heart mr-1"></i> いいねする
-          </button>
-        `;
-        
-        // イベントリスナーを再設定
-        document.getElementById('like-btn').addEventListener('click', function() {
-          likeJob(jobId);
-        });
-        
-        document.getElementById('like-btn-bottom').addEventListener('click', function() {
-          likeJob(jobId);
-        });
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-  
-  // マッチングトースト表示
-  function showMatchToast() {
-    // トースト要素を作成
-    const toast = document.createElement('div');
-    toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center';
-    toast.innerHTML = `
-      <i class="fas fa-check-circle mr-2 text-xl"></i>
-      <div>
-        <div class="font-bold">マッチングしました！</div>
-        <div class="text-sm">企業からもいいねがありました</div>
-      </div>
-      <button class="ml-4 text-white focus:outline-none" onclick="this.parentElement.remove()">
-        <i class="fas fa-times"></i>
+  if (isLiked) {
+    likeButton.innerHTML = `
+      <button id="unlike-btn" class="text-red-500 hover:text-red-700">
+        <i class="fas fa-heart text-2xl"></i>
       </button>
     `;
     
-    // トーストをドキュメントに追加
-    document.body.appendChild(toast);
+    bottomBtnContainer.querySelector('button').outerHTML = `
+      <button id="unlike-btn-bottom" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded shadow">
+        <i class="fas fa-heart mr-1"></i> いいね中
+      </button>
+    `;
+  } else {
+    likeButton.innerHTML = `
+      <button id="like-btn" class="text-gray-400 hover:text-red-500">
+        <i class="far fa-heart text-2xl"></i>
+      </button>
+    `;
     
-    // 5秒後に自動的に消える
-    setTimeout(() => {
-      if (document.body.contains(toast)) {
-        toast.remove();
-      }
-    }, 5000);
+    bottomBtnContainer.querySelector('button').outerHTML = `
+      <button id="like-btn-bottom" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow">
+        <i class="far fa-heart mr-1"></i> いいねする
+      </button>
+    `;
   }
-});
+  
+  setupEventListeners();
+}
+
+// マッチングトースト表示
+function showMatchToast() {
+  // トースト要素を作成
+  const toast = document.createElement('div');
+  toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center';
+  toast.innerHTML = `
+    <i class="fas fa-check-circle mr-2 text-xl"></i>
+    <div>
+      <div class="font-bold">マッチングしました！</div>
+      <div class="text-sm">企業からもいいねがありました</div>
+    </div>
+    <button class="ml-4 text-white focus:outline-none" onclick="this.parentElement.remove()">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  
+  // トーストをドキュメントに追加
+  document.body.appendChild(toast);
+  
+  // 5秒後に自動的に消える
+  setTimeout(() => {
+    if (document.body.contains(toast)) {
+      toast.remove();
+    }
+  }, 5000);
+}
 </script> 

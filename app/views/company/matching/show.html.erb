@@ -1,9 +1,9 @@
-<div class="bg-white shadow rounded-lg p-6">
+<div class="bg-white shadow rounded-lg p-6" data-turbolinks="false">
   <div class="flex justify-between items-start mb-6">
     <h1 class="text-2xl font-bold text-gray-800">個人プロフィール詳細</h1>
     
     <div class="flex space-x-2">
-      <div class="like-button" data-user-id="<%= @user.id %>" data-job-id="<%= @job_id %>">
+      <div class="like-button" data-user-id="<%= @user.id %>" data-job-id="<%= @job.id %>">
         <% if @liked %>
           <button class="unlike-btn bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg flex items-center">
             <i class="fas fa-heart mr-2"></i> いいね済み
@@ -17,14 +17,14 @@
       
       <% 
         # マッチしている場合にメッセージボタンを表示
-        matched = current_user.likes.exists?(target_user_id: @user.id, job_id: @job_id) && 
-                @user.likes.exists?(job_id: @job_id)
+        matched = current_user.likes.exists?(target_user_id: @user.id, job_id: @job.id) && 
+                @user.likes.exists?(job_id: @job.id)
         
         if matched
           conversation = Conversation.find_or_create_by(
             user_id: current_user.id,
             target_user_id: @user.id,
-            job_id: @job_id
+            job_id: @job.id
           )
       %>
         <%= link_to company_message_path(conversation), class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg flex items-center" do %>
@@ -155,7 +155,7 @@
     <div class="flex justify-between">
       <%= link_to "一覧に戻る", search_company_matching_index_path(job_id: @job_id), class: "bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg" %>
       
-      <div class="like-button" data-user-id="<%= @user.id %>" data-job-id="<%= @job_id %>">
+      <div class="like-button" data-user-id="<%= @user.id %>" data-job-id="<%= @job.id %>">
         <% if @liked %>
           <button class="unlike-btn bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg flex items-center">
             <i class="fas fa-heart mr-2"></i> いいね済み
@@ -171,136 +171,139 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function setupEventListeners() {
   // いいねボタンのイベントリスナー
   document.querySelectorAll('.like-btn').forEach(button => {
-    button.addEventListener('click', function() {
-      const userId = this.closest('.like-button').dataset.userId;
-      const jobId = this.closest('.like-button').dataset.jobId;
-      likeUser(userId, jobId);
-    });
+    button.removeEventListener('click', handleLike);
+    button.addEventListener('click', handleLike);
   });
   
   // いいね解除ボタンのイベントリスナー
   document.querySelectorAll('.unlike-btn').forEach(button => {
-    button.addEventListener('click', function() {
-      const userId = this.closest('.like-button').dataset.userId;
-      const jobId = this.closest('.like-button').dataset.jobId;
-      unlikeUser(userId, jobId);
-    });
+    button.removeEventListener('click', handleUnlike);
+    button.addEventListener('click', handleUnlike);
   });
-  
-  // いいね処理
-  function likeUser(userId, jobId) {
-    fetch(`/company/matching/${userId}/like?job_id=${jobId}`, {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        // すべてのいいねボタンを更新
-        document.querySelectorAll('.like-button').forEach(button => {
-          button.innerHTML = `
-            <button class="unlike-btn bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg flex items-center">
-              <i class="fas fa-heart mr-2"></i> いいね済み
-            </button>
-          `;
-        });
-        
-        // イベントリスナーを再設定
-        document.querySelectorAll('.unlike-btn').forEach(button => {
-          button.addEventListener('click', function() {
-            unlikeUser(userId, jobId);
-          });
-        });
-        
-        // マッチした場合はトースト表示
-        if (data.matched) {
-          showMatchToast(userId, data.conversation_id);
-        }
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-  
-  // いいね解除処理
-  function unlikeUser(userId, jobId) {
-    fetch(`/company/matching/${userId}/unlike?job_id=${jobId}`, {
-      method: 'DELETE',
-      headers: {
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        // すべてのいいねボタンを更新
-        document.querySelectorAll('.like-button').forEach(button => {
-          button.innerHTML = `
-            <button class="like-btn bg-gray-200 hover:bg-red-500 hover:text-white text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center">
-              <i class="far fa-heart mr-2"></i> いいね
-            </button>
-          `;
-        });
-        
-        // イベントリスナーを再設定
-        document.querySelectorAll('.like-btn').forEach(button => {
-          button.addEventListener('click', function() {
-            likeUser(userId, jobId);
-          });
-        });
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-  
-  // マッチングトースト表示
-  function showMatchToast(userId, conversationId) {
-    // トースト要素を作成
-    const toast = document.createElement('div');
-    toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center';
-    
-    // メッセージへのリンクを含めたHTML
-    let toastHtml = `
-      <i class="fas fa-check-circle mr-2 text-xl"></i>
-      <div>
-        <div class="font-bold">マッチングしました！</div>
-        <div class="text-sm">個人からもいいねがありました</div>
-    `;
-    
-    if (conversationId) {
-      toastHtml += `
-        <div class="mt-2">
-          <a href="/company/messages/${conversationId}" class="bg-white text-green-600 hover:bg-gray-100 px-3 py-1 rounded text-sm font-medium inline-block">
-            メッセージを送る
-          </a>
-        </div>
-      `;
+}
+
+function handleLike() {
+  const userId = this.closest('.like-button').dataset.userId;
+  const jobId = this.closest('.like-button').dataset.jobId;
+  likeUser(userId, jobId);
+}
+
+function handleUnlike() {
+  const userId = this.closest('.like-button').dataset.userId;
+  const jobId = this.closest('.like-button').dataset.jobId;
+  unlikeUser(userId, jobId);
+}
+
+// イベントリスナーの設定
+document.addEventListener('DOMContentLoaded', setupEventListeners);
+document.addEventListener('turbo:load', setupEventListeners);
+document.addEventListener('turbo:render', setupEventListeners);
+
+// いいね処理
+function likeUser(userId, jobId) {
+  fetch(`/company/matching/${userId}/like?job_id=${jobId}`, {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+      'Content-Type': 'application/json'
     }
-    
-    toastHtml += `
-      </div>
-      <button class="ml-4 text-white focus:outline-none" onclick="this.parentElement.remove()">
-        <i class="fas fa-times"></i>
-      </button>
-    `;
-    
-    toast.innerHTML = toastHtml;
-    
-    // トーストをドキュメントに追加
-    document.body.appendChild(toast);
-    
-    // 8秒後に自動的に消える
-    setTimeout(() => {
-      if (document.body.contains(toast)) {
-        toast.remove();
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      // すべてのいいねボタンを更新
+      document.querySelectorAll('.like-button').forEach(button => {
+        button.innerHTML = `
+          <button class="unlike-btn bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg flex items-center">
+            <i class="fas fa-heart mr-2"></i> いいね済み
+          </button>
+        `;
+      });
+      
+      // イベントリスナーを再設定
+      setupEventListeners();
+      
+      // マッチした場合はトースト表示
+      if (data.matched) {
+        showMatchToast(userId, data.conversation_id);
       }
-    }, 8000);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// いいね解除処理
+function unlikeUser(userId, jobId) {
+  fetch(`/company/matching/${userId}/unlike?job_id=${jobId}`, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      // すべてのいいねボタンを更新
+      document.querySelectorAll('.like-button').forEach(button => {
+        button.innerHTML = `
+          <button class="like-btn bg-gray-200 hover:bg-red-500 hover:text-white text-gray-700 font-medium py-2 px-4 rounded-lg flex items-center">
+            <i class="far fa-heart mr-2"></i> いいね
+          </button>
+        `;
+      });
+      
+      // イベントリスナーを再設定
+      setupEventListeners();
+    }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+// マッチングトースト表示
+function showMatchToast(userId, conversationId) {
+  // トースト要素を作成
+  const toast = document.createElement('div');
+  toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 flex items-center';
+  
+  // メッセージへのリンクを含めたHTML
+  let toastHtml = `
+    <i class="fas fa-check-circle mr-2 text-xl"></i>
+    <div>
+      <div class="font-bold">マッチングしました！</div>
+      <div class="text-sm">個人からもいいねがありました</div>
+  `;
+  
+  if (conversationId) {
+    toastHtml += `
+      <div class="mt-2">
+        <a href="/company/messages/${conversationId}" class="bg-white text-green-600 hover:bg-gray-100 px-3 py-1 rounded text-sm font-medium inline-block">
+          メッセージを送る
+        </a>
+      </div>
+    `;
   }
-});
+  
+  toastHtml += `
+    </div>
+    <button class="ml-4 text-white focus:outline-none" onclick="this.parentElement.remove()">
+      <i class="fas fa-times"></i>
+    </button>
+  `;
+  
+  toast.innerHTML = toastHtml;
+  
+  // トーストをドキュメントに追加
+  document.body.appendChild(toast);
+  
+  // 8秒後に自動的に消える
+  setTimeout(() => {
+    if (document.body.contains(toast)) {
+      toast.remove();
+    }
+  }, 8000);
+}
 </script>
