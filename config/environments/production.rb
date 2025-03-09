@@ -59,7 +59,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: "aidd.work", protocol: "https" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -82,7 +82,7 @@ Rails.application.configure do
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   config.hosts = [
-    "aidd-5f4ef2dba244.herokuapp.com",     # Allow requests from Heroku app
+    "aidd-5f4ef2dba244.herokuapp.com",  "aidd.work"   # Allow requests from Heroku app
     # "example.com",     # Allow requests from example.com
     # /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   ]
