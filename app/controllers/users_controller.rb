@@ -20,8 +20,8 @@ class UsersController < ApplicationController
       puts "ユーザー登録が成功しました: #{@user.user_id}"
       Rails.logger.debug "ユーザー登録が成功しました: #{@user.user_id}" if Rails.env.development?
       
-      flash[:success] = "会員登録が完了しました"
-      redirect_to root_path
+      flash[:success] = "会員登録が完了しました。ログインしてください。"
+      redirect_to login_path
     else
       # 登録失敗時
       puts "ユーザー登録が失敗しました: #{@user.errors.full_messages.join(', ')}"
