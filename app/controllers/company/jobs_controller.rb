@@ -117,7 +117,7 @@ class Company::JobsController < ApplicationController
     @employment_types = EmploymentType.all
     @work_styles = WorkStyle.all
     @locations = Location.all
-    @skills = Skill.all
+    @skills = Skill.order(:category, :name)
   end
   
   def require_company_user

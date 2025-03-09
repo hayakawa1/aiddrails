@@ -34,8 +34,8 @@ class Company::MatchingController < ApplicationController
       @selected_job = Job.find(@selected_job_id)
       @matching_users = MatchingService.find_matching_users_for_job(@selected_job_id)
       
-      # いいね済みユーザーのIDリストを取得
-      @liked_user_ids = @user.likes.where(job_id: @selected_job_id).pluck(:user_id)
+      # いいね済みユーザーのIDリストを取得（修正）
+      @liked_user_ids = @user.likes.where(job_id: @selected_job_id, target_user_id: @matching_users.pluck(:id)).pluck(:target_user_id)
     else
       @matching_users = []
       @liked_user_ids = []
@@ -54,11 +54,8 @@ class Company::MatchingController < ApplicationController
     # ユーザーのスキル情報を取得
     @user_skills = @user.user_skills.includes(:skill)
     
-    # マッチングスコアを計算
-    matching_data = MatchingService.calculate_matching_score(@user.id, @job_id)
-    @matching_score = matching_data[:total_score]
-    @condition_match_score = matching_data[:condition_match_score]
-    @skill_match_score = matching_data[:skill_match_score]
+    # マッチングの一致を確認（スコア計算は行わない）
+    @is_match = MatchingService.is_mutual_match(@user.id, @job_id) if @user && @job_id.present?
   end
 
   def like
@@ -115,15 +112,9 @@ class Company::MatchingController < ApplicationController
   def unlike
     @target_user = User.find(params[:id])
     @job = Job.find(params[:job_id])
-    @current_user = current_user
     
-    like = @current_user.likes.find_by(target_user_id: @target_user.id, job_id: @job.id)
-    
-    if like&.destroy
-      render json: { status: 'success' }
-    else
-      render json: { status: 'error', message: 'いいねの取り消しに失敗しました' }, status: :unprocessable_entity
-    end
+    # いいねの削除は行わず、成功レスポンスを返す
+    render json: { status: 'success', message: 'いいねは取り消せません' }
   end
   
   private

@@ -61,13 +61,8 @@ class Individual::MatchingController < ApplicationController
   
   def unlike
     @job = Job.find(params[:id])
-    @user = current_user
-    like = @user.likes.find_by(job_id: @job.id)
     
-    if like&.destroy
-      render json: { status: 'success' }
-    else
-      render json: { status: 'error', message: 'いいねの取り消しに失敗しました' }, status: :unprocessable_entity
-    end
+    # いいねの削除は行わず、成功レスポンスを返す
+    render json: { status: 'success', message: 'いいねは取り消せません' }
   end
 end

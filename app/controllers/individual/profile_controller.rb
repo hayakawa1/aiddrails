@@ -15,7 +15,7 @@ class Individual::ProfileController < ApplicationController
     @locations = Location.all
     @employment_types = EmploymentType.all
     @work_styles = WorkStyle.all
-    @skills = Skill.all
+    @skills = Skill.order(:category, :name)
     
     # ユーザーが選択しているスキルのIDとレベルのハッシュを作成
     @user_skills_hash = {}
@@ -65,7 +65,7 @@ class Individual::ProfileController < ApplicationController
     @locations = Location.all
     @employment_types = EmploymentType.all
     @work_styles = WorkStyle.all
-    @skills = Skill.all
+    @skills = Skill.order(:category, :name)
     
     # ユーザースキルハッシュを再構築
     @user_skills_hash = {}

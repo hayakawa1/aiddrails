@@ -22,7 +22,6 @@ class Company::MessagesController < ApplicationController
   end
 
   def create
-    @conversation = Conversation.find(params[:conversation_id])
     @message = @conversation.messages.new(message_params)
     @message.sender_id = current_user.id
     
@@ -47,8 +46,9 @@ class Company::MessagesController < ApplicationController
   private
 
   def set_conversation
-    # 指定されたIDでまず探す
-    conversation = Conversation.find_by(id: params[:id])
+    # 指定されたIDでまず探す（createアクションの場合はconversation_idを使用）
+    conversation_id = params[:id] || params[:conversation_id]
+    conversation = Conversation.find_by(id: conversation_id)
     
     # もしなければ、target_user_idとjob_idから探す
     if conversation.nil? && params[:target_user_id].present? && params[:job_id].present?

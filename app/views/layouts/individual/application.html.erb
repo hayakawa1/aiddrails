@@ -94,9 +94,17 @@
         <div class="font-bold text-xl">
           <%= link_to root_path, class: "flex items-center" do %>
             <span class="text-gradient">AIDD.WORK</span>
-            <span class="ml-2 text-gray-600">個人ユーザー</span>
           <% end %>
         </div>
+        
+        <!-- モバイルメニュー切り替えボタン -->
+        <div class="md:hidden">
+          <button id="mobile-menu-button" type="button" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+        
+        <!-- PC用メニュー -->
         <div class="hidden md:flex items-center space-x-6">
           <% if logged_in? %>
             <%= link_to individual_profile_show_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
@@ -110,9 +118,11 @@
             <% end %>
           <% end %>
         </div>
-        <div class="flex items-center gap-4">
+        
+        <!-- ユーザー情報・ログアウトボタン（PCのみ表示）-->
+        <div class="hidden md:flex items-center gap-4">
           <% if logged_in? %>
-            <span class="text-gray-700 hidden md:inline">
+            <span class="text-gray-700">
               <i class="fas fa-user mr-1"></i> <%= current_user.user_id %> (<%= current_user.user_type %>)
             </span>
             <%= link_to logout_path, data: { turbo_method: :delete }, class: 'flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
@@ -125,6 +135,49 @@
             <%= link_to signup_path, class: 'flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
               <i class="fas fa-user-plus"></i> 会員登録
             <% end %>
+          <% end %>
+        </div>
+        
+        <!-- モバイル用の未ログイン時ボタン -->
+        <% if !logged_in? %>
+          <div class="md:hidden flex items-center gap-2">
+            <%= link_to login_path, class: 'flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-3 rounded transition duration-300 text-sm' do %>
+              <i class="fas fa-sign-in-alt"></i> ログイン
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      
+      <!-- モバイル用メニュー（初期状態では非表示） -->
+      <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+        <div class="container mx-auto px-4 py-2">
+          <% if logged_in? %>
+            <div class="flex flex-col space-y-3 py-3">
+              <%= link_to individual_profile_show_path, class: 'text-gray-700 hover:text-blue-500 transition-colors py-2 border-b border-gray-100' do %>
+                <i class="fas fa-user-circle mr-1"></i> プロフィール
+              <% end %>
+              <%= link_to individual_matching_index_path, class: 'text-gray-700 hover:text-blue-500 transition-colors py-2 border-b border-gray-100' do %>
+                <i class="fas fa-handshake mr-1"></i> マッチング
+              <% end %>
+              <%= link_to individual_messages_path, class: 'text-gray-700 hover:text-blue-500 transition-colors py-2 border-b border-gray-100' do %>
+                <i class="fas fa-envelope mr-1"></i> メッセージ
+              <% end %>
+              <div class="text-gray-700 py-2 border-b border-gray-100">
+                <i class="fas fa-user mr-1"></i> <%= current_user.user_id %> (<%= current_user.user_type %>)
+              </div>
+              <%= link_to logout_path, data: { turbo_method: :delete }, class: 'text-red-500 hover:text-red-700 transition-colors py-2 flex items-center' do %>
+                <i class="fas fa-sign-out-alt mr-1"></i> ログアウト
+              <% end %>
+            </div>
+          <% else %>
+            <div class="flex flex-col space-y-3 py-3">
+              <%= link_to login_path, class: 'text-blue-500 hover:text-blue-700 transition-colors py-2 border-b border-gray-100' do %>
+                <i class="fas fa-sign-in-alt mr-1"></i> ログイン
+              <% end %>
+              <%= link_to signup_path, class: 'text-green-500 hover:text-green-700 transition-colors py-2' do %>
+                <i class="fas fa-user-plus mr-1"></i> 会員登録
+              <% end %>
+            </div>
           <% end %>
         </div>
       </div>
@@ -157,5 +210,23 @@
         </div>
       </div>
     </footer>
+
+    <!-- ハンバーガーメニューのトグル機能 -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const menuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuButton && mobileMenu) {
+          menuButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            mobileMenu.classList.toggle('hidden');
+            console.log('Menu toggled');
+          });
+        } else {
+          console.error('Menu elements not found');
+        }
+      });
+    </script>
   </body>
 </html> 

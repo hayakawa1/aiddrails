@@ -12,9 +12,11 @@
       </div>
       
       <div class="mb-4">
-        <%= f.label :description, "業務内容と求める人材", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= f.label :description, "業務内容と求める人材、AIをどう業務に活用するか", class: "block text-gray-700 text-sm font-bold mb-2" %>
         <span class="text-red-500">*</span>
-        <%= f.text_area :description, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "業務内容、求める人材像などを入力してください", rows: 10, required: true %>
+        <%= f.text_area :description, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "【業務内容】Webアプリケーション開発におけるフロントエンド実装、UI/UX設計など
+【求める人材】React.jsの実務経験が3年以上ある方、チームでの開発経験がある方
+【AIの活用】ChatGPTを活用したコード生成やレビューを取り入れ、効率的な開発を推進", rows: 10, required: true %>
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -43,8 +45,13 @@
       </div>
       
       <div class="mb-4">
-        <%= f.label :legal_info, "職業安定法施行規則に基づく内容", class: "block text-gray-700 text-sm font-bold mb-2" %>
-        <%= f.text_area :legal_info, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "職業安定法施行規則に基づく情報を入力してください", rows: 5 %>
+        <%= f.label :legal_info, raw("職業安定法施行規則に基づく内容 <a href='https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/koyou/haken-shoukai/r0604anteisokukaisei1.html' target='_blank' class='text-blue-500 hover:text-blue-700'>[参照]</a>"), class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= f.text_area :legal_info, class: "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline", placeholder: "【就業時間】9:00〜18:00（休憩時間：12:00〜13:00）
+【時間外労働】月平均20時間程度
+【休日】完全週休2日制（土日）、祝日、年末年始、有給休暇
+【就業場所の変更範囲】原則として本社（東京都渋谷区）での勤務、在宅勤務可（週3日まで）
+【受動喫煙防止措置】屋内禁煙（喫煙専用室あり）
+【加入保険】健康保険、厚生年金保険、雇用保険、労災保険", rows: 5 %>
       </div>
     </div>
     
@@ -52,42 +59,56 @@
       <h2 class="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">必要スキル</h2>
       <p class="text-gray-600 mb-4">求人に必要なスキルとそのレベルを選択してください</p>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <% @skills.each do |skill| %>
-          <div class="border rounded p-4 relative">
-            <div class="flex items-start mb-2">
-              <%= check_box_tag 'skill_ids[]', skill.id, @job_skills_hash.key?(skill.id), id: "skill_#{skill.id}", class: "mr-2 mt-1" %>
-              <div>
-                <label for="skill_<%= skill.id %>" class="block font-medium text-gray-700"><%= skill.name %></label>
-                <% if skill.description.present? %>
-                  <p class="text-sm text-gray-600"><%= skill.description %></p>
-                <% end %>
-              </div>
-            </div>
-            
-            <div class="pl-6">
-              <label class="block text-gray-700 text-sm font-bold mb-1">レベル</label>
-              <select name="skill_levels[<%= skill.id %>]" class="shadow border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline <%= @job_skills_hash.key?(skill.id) ? '' : 'opacity-50' %>" 
-                      <%= @job_skills_hash.key?(skill.id) ? '' : 'disabled' %>
-                      id="skill_level_<%= skill.id %>">
-                <% (1..5).each do |level| %>
-                  <option value="<%= level %>" <%= @job_skills_hash[skill.id] == level ? 'selected' : '' %>>
-                    <%= level %> - <%= level_description(level) %>
-                  </option>
-                <% end %>
-              </select>
-            </div>
-            
-            <script>
-              document.getElementById('skill_<%= skill.id %>').addEventListener('change', function() {
-                var level_select = document.getElementById('skill_level_<%= skill.id %>');
-                level_select.disabled = !this.checked;
-                level_select.classList.toggle('opacity-50', !this.checked);
-              });
-            </script>
-          </div>
-        <% end %>
+      <div class="bg-gray-50 p-4 rounded-lg mb-6">
+        <h3 class="font-medium text-gray-700 mb-2">スキルレベルの目安</h3>
+        <ul class="text-sm text-gray-600 space-y-1">
+          <% skill_level_definitions.each do |definition| %>
+            <li><span class="font-medium">Lv.<%= definition[:level] %>:</span> <%= definition[:detailed] %></li>
+          <% end %>
+        </ul>
       </div>
+      
+      <% @skills.group_by(&:category).each do |category, skills| %>
+        <div class="mt-6 mb-3">
+          <h3 class="text-lg font-semibold text-gray-700 border-b pb-1"><%= category %></h3>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <% skills.each do |skill| %>
+            <div class="border rounded p-4 relative">
+              <div class="flex items-start mb-2">
+                <%= check_box_tag 'skill_ids[]', skill.id, @job_skills_hash.key?(skill.id), id: "skill_#{skill.id}", class: "mr-2 mt-1" %>
+                <div>
+                  <label for="skill_<%= skill.id %>" class="block font-medium text-gray-700"><%= skill.name %></label>
+                  <% if skill.description.present? %>
+                    <p class="text-sm text-gray-600"><%= skill.description %></p>
+                  <% end %>
+                </div>
+              </div>
+              
+              <div class="pl-6">
+                <label class="block text-gray-700 text-sm font-bold mb-1">レベル</label>
+                <select name="skill_levels[<%= skill.id %>]" class="shadow border rounded py-1 px-2 text-gray-700 focus:outline-none focus:shadow-outline <%= @job_skills_hash.key?(skill.id) ? '' : 'opacity-50' %>" 
+                        <%= @job_skills_hash.key?(skill.id) ? '' : 'disabled' %>
+                        id="skill_level_<%= skill.id %>">
+                  <% (1..5).each do |level| %>
+                    <option value="<%= level %>" <%= @job_skills_hash[skill.id] == level ? 'selected' : '' %>>
+                      <%= level %> - <%= level_description(level) %>
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+              
+              <script>
+                document.getElementById('skill_<%= skill.id %>').addEventListener('change', function() {
+                  var level_select = document.getElementById('skill_level_<%= skill.id %>');
+                  level_select.disabled = !this.checked;
+                  level_select.classList.toggle('opacity-50', !this.checked);
+                });
+              </script>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
     
     <div class="flex items-center justify-between mt-6">
