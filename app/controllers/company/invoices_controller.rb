@@ -48,78 +48,47 @@ class Company::InvoicesController < ApplicationController
   end
   
   def generate_invoice_pdf(invoice)
+    # Prawnをrequireして基本的なPDFを生成
     require 'prawn'
     
-    # A4サイズでPDFを作成
-    pdf = Prawn::Document.new(page_size: 'A4', margin: [50, 50, 50, 50])
-    
-    # ヘッダー部分
-    pdf.text "請求書", size: 24, style: :bold, align: :center
-    pdf.move_down 20
-    
-    # 日付と請求番号
-    pdf.text "請求番号: #{invoice.id}", size: 12
-    pdf.text "発行日: #{invoice.occurred_at.strftime('%Y年%m月%d日')}", size: 12
-    pdf.text "支払期限: #{(invoice.occurred_at + 30.days).strftime('%Y年%m月%d日')}", size: 12
-    pdf.move_down 20
-    
-    # 請求先情報
-    pdf.text "請求先:", size: 14, style: :bold
-    pdf.text "#{invoice.company_user.company_profile.company_name} 御中", size: 12
-    pdf.move_down 20
-    
-    # 請求元情報
-    pdf.text "請求元:", size: 14, style: :bold
-    pdf.text "AIDD株式会社", size: 12
-    pdf.text "〒100-0001 東京都千代田区1-1-1", size: 12
-    pdf.text "TEL: 03-1234-5678", size: 12
-    pdf.text "Email: billing@aidd.example.com", size: 12
-    
-    pdf.move_down 30
-    
-    # 支払状況
-    pdf.text "支払状況: #{invoice.paid ? '支払済' : '未払い'}", size: 12
-    pdf.move_down 20
-    
-    # 請求内容
-    pdf.text "請求内容:", size: 14, style: :bold
-    pdf.move_down 10
-    
-    # 対象情報
-    pdf.text "・マッチング手数料", size: 12
-    pdf.text "　求人: #{invoice.job.title}", size: 12
-    pdf.text "　求職者: #{invoice.individual_user.individual_profile&.display_name || invoice.individual_user.user_id}", size: 12
-    pdf.text "　マッチング成立日: #{invoice.occurred_at.strftime('%Y年%m月%d日')}", size: 12
-    
-    pdf.move_down 30
-    
-    # 請求金額
-    pdf.text "請求金額:", size: 16, style: :bold
-    pdf.text "#{invoice.amount.to_s(:delimited)}円（税込）", size: 16
-    
-    pdf.move_down 40
-    
-    # 振込先情報
-    pdf.text "お振込先", size: 14, style: :bold
-    pdf.move_down 10
-    
-    pdf.text "銀行名: AIサービス銀行 本店", size: 12
-    pdf.text "口座種別: 普通口座", size: 12
-    pdf.text "口座番号: 1234567", size: 12
-    pdf.text "口座名義: カ）エーアイディーディー", size: 12
-    
-    pdf.move_down 40
-    
-    # 備考
-    pdf.text "備考:", size: 14, style: :bold
-    pdf.move_down 10
-    
-    pdf.text "1. この度は弊社サービスをご利用いただき、誠にありがとうございます。", size: 12
-    pdf.text "2. お支払いは請求書発行日より30日以内にお願いいたします。", size: 12
-    pdf.text "3. 振込手数料は貴社負担でお願いいたします。", size: 12
-    pdf.text "4. ご不明な点がございましたら、support@aidd.example.com までお問い合わせください。", size: 12
-    
-    # PDF文書のバイナリデータを取得
-    pdf.render
+    begin
+      # 最もシンプルな設定でPDFを作成
+      pdf = Prawn::Document.new
+      
+      # 基本的な内容のみ追加
+      pdf.text "請求書", size: 20, align: :center
+      pdf.move_down 20
+      
+      pdf.text "請求番号: #{invoice.id}"
+      pdf.text "発行日: #{invoice.occurred_at.strftime('%Y/%m/%d')}"
+      
+      pdf.move_down 20
+      pdf.text "請求先: #{invoice.company_user.company_profile.company_name} 御中"
+      
+      pdf.move_down 20
+      pdf.text "請求元: AIDD株式会社"
+      
+      pdf.move_down 20
+      pdf.text "対象求人: #{invoice.job.title}"
+      pdf.text "求職者: #{invoice.individual_user.individual_profile&.display_name || invoice.individual_user.user_id}"
+      
+      pdf.move_down 20
+      pdf.text "請求金額: #{invoice.amount.to_s(:delimited)}円", size: 16
+      
+      # 最後にPDFデータを返す
+      return pdf.render
+    rescue => e
+      # エラーが発生した場合はログに出力して簡易PDFを返す
+      Rails.logger.error "PDF生成エラー: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      
+      # 最小限のPDFを作成して返す
+      simple_pdf = Prawn::Document.new
+      simple_pdf.text "請求書（エラーにより簡易表示）", size: 16
+      simple_pdf.move_down 10
+      simple_pdf.text "請求ID: #{invoice.id}"
+      simple_pdf.text "金額: #{invoice.amount.to_s(:delimited)}円"
+      simple_pdf.render
+    end
   end
 end
