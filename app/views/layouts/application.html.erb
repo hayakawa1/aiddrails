@@ -17,49 +17,231 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans JP"', 'sans-serif'],
+              display: ['"Zen Kaku Gothic New"', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
 
-    <%# アプリケーションCSS %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <style>
+      /* インラインスタイル */
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+      
+      .text-gradient {
+        background-image: linear-gradient(to right, #3b82f6, #4f46e5);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      
+      .glass-card {
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      
+      .section {
+        padding: 4rem 1rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
+      /* ヒーローセクションスタイル */
+      .hero-section {
+        position: relative;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: white;
+      }
+      
+      .hero-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+      
+      .hero-bg::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+      }
+      
+      .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      
+      .hero-content {
+        max-width: 800px;
+        text-align: center;
+        padding: 0 1rem;
+        position: relative;
+        z-index: 2;
+      }
+      
+      /* アニメーション */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from { 
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to { 
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-fade-in {
+        animation: fadeIn 1s ease forwards;
+      }
+      
+      .animate-slide-up {
+        animation: slideUp 0.8s ease forwards;
+      }
+      
+      .delay-200 {
+        animation-delay: 200ms;
+      }
+      
+      .delay-400 {
+        animation-delay: 400ms;
+      }
+      
+      /* 特徴カード */
+      .feature-card {
+        background-color: white;
+        border-radius: 0.8rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      
+      .feature-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: rgba(59, 130, 246, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      
+      .feature-icon i {
+        color: #3b82f6;
+        font-size: 1.5rem;
+      }
+    </style>
+
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-100">
-    <nav class="bg-white shadow-md">
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <nav class="bg-white shadow-md sticky top-0 z-50">
       <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div class="font-bold text-xl text-blue-600">
-          <%= link_to 'AIDD.WORK', root_path, class: "hover:text-blue-700 transition-colors duration-200" %>
+        <div class="font-bold text-xl">
+          <%= link_to root_path, class: "flex items-center" do %>
+            <span class="text-gradient">AIDD.WORK</span>
+          <% end %>
         </div>
-        <div>
+        <div class="flex items-center gap-4">
           <% if logged_in? %>
-            <span class="mr-4 text-gray-700">
-              <%= current_user.user_id %> (<%= current_user.user_type %>)
+            <span class="text-gray-700 hidden md:inline">
+              <i class="fas fa-user mr-1"></i> <%= current_user.user_id %> (<%= current_user.user_type %>)
             </span>
-            <%= link_to 'ログアウト', logout_path, data: { turbo_method: :delete }, class: 'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline' %>
+            <%= link_to logout_path, data: { turbo_method: :delete }, class: 'flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
+              <i class="fas fa-sign-out-alt"></i> ログアウト
+            <% end %>
           <% else %>
-            <%= link_to 'ログイン', login_path, class: 'bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline mr-2' %>
-            <%= link_to '会員登録', signup_path, class: 'bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline' %>
+            <%= link_to login_path, class: 'flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-3 rounded transition duration-300 mr-2' do %>
+              <i class="fas fa-sign-in-alt"></i> ログイン
+            <% end %>
+            <%= link_to signup_path, class: 'flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
+              <i class="fas fa-user-plus"></i> 会員登録
+            <% end %>
           <% end %>
         </div>
       </div>
     </nav>
-    <div class="container mx-auto px-4 py-8 max-w-2xl">
-      <% flash.each do |message_type, message| %>
-        <% 
-          alert_class = case message_type 
-            when 'success', 'notice'
-              'bg-green-100 border-green-500 text-green-700'
-            else
-              'bg-red-100 border-red-500 text-red-700'
-            end 
-        %>
-        <div class="<%= alert_class %> border-l-4 p-4 mb-4 rounded">
-          <%= message %>
+
+    <% if content_for?(:full_width) %>
+      <%= yield :full_width %>
+    <% end %>
+
+    <main class="flex-grow">
+      <div class="container mx-auto px-4 py-8 <%= content_for?(:full_width) ? '' : 'max-w-4xl' %>">
+        <% flash.each do |message_type, message| %>
+          <% 
+            alert_class = case message_type 
+              when 'success', 'notice'
+                'bg-green-100 border-green-500 text-green-700'
+              else
+                'bg-red-100 border-red-500 text-red-700'
+              end 
+          %>
+          <div class="<%= alert_class %> border-l-4 p-4 mb-4 rounded animate-fade-in">
+            <%= message %>
+          </div>
+        <% end %>
+        
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <p class="text-sm">&copy; <%= Date.today.year %> AIDD.WORK All Rights Reserved.</p>
         </div>
-      <% end %>
-      
-      <%= yield %>
-    </div>
+      </div>
+    </footer>
   </body>
 </html>

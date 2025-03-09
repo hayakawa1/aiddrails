@@ -1,51 +1,203 @@
+<% content_for :full_width do %>
+  <!-- ヒーローセクション -->
+  <section class="hero-section">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop" alt="Programming with AI" />
+    </div>
+    
+    <div class="hero-content">
+      <div class="animate-fade-in">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6">
+          AI駆動開発エンジニアと
+          <br />
+          <span class="text-blue-500">企業の新しい</span>
+          マッチング体験
+        </h1>
+      </div>
+      
+      <div class="animate-slide-up delay-200">
+        <p class="text-xl mb-8 text-white/90">
+          AIDD.WORKは、Cursorなどのツールを使いこなすエンジニアと、
+          <br />
+          最先端の開発スキルを求める企業をつなぐプラットフォームです。
+        </p>
+      </div>
+      
+      <div class="animate-slide-up delay-400 flex flex-col sm:flex-row gap-4 justify-center">
+        <%= link_to login_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 flex items-center justify-center" do %>
+          求人を探す <i class="fas fa-arrow-right ml-2"></i>
+        <% end %>
+        
+        <%= link_to signup_path, class: "bg-white/10 hover:bg-white/20 text-white border border-white/30 font-bold py-3 px-8 rounded-lg transition duration-300" do %>
+          新規登録する
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-8 left-0 right-0 z-10 flex justify-center">
+      <div class="animate-bounce">
+        <div class="w-10 h-10 border-2 border-white rounded-full flex items-center justify-center">
+          <i class="fas fa-arrow-down text-white"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>
 
+<!-- 特徴セクション -->
+<section class="section">
+  <div class="max-w-4xl mx-auto text-center mb-16">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">AIツールを活用した新しい開発体験</h2>
+    <p class="text-lg text-gray-600">
+      AI駆動開発は、プログラミングの効率と創造性を大幅に向上させます。
+      Cursorなどのツールを使いこなす人材と、革新的な開発環境を提供する企業をマッチングします。
+    </p>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="animate-slide-up" style="animation-delay: 100ms">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-code"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">AIツールの専門家</h3>
+        <p class="text-gray-600">
+          Cursor、GitHub Copilot、ChatGPTなどのAIツールを駆使するエンジニアのためのプラットフォーム。
+        </p>
+      </div>
+    </div>
+    
+    <div class="animate-slide-up" style="animation-delay: 200ms">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">スキルマッチング</h3>
+        <p class="text-gray-600">
+          AIツールの熟練度や技術スタックに基づいた、精度の高いマッチングシステム。
+        </p>
+      </div>
+    </div>
+    
+    <div class="animate-slide-up" style="animation-delay: 300ms">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <h3 class="text-xl font-bold mb-2">先進的な企業</h3>
+        <p class="text-gray-600">
+          AI駆動開発を取り入れ、革新的な開発環境を提供する企業とのマッチング。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<section class="bg-white py-10">
+<!-- 使い方セクション -->
+<section class="bg-gray-100 py-16 md:py-24">
   <div class="container mx-auto px-4">
-    <!-- ヒーローセクション -->
-    <div class="flex flex-col items-center justify-center text-center mb-16">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-6">AIDD.WORK</h1>
-      <p class="text-xl text-gray-600 max-w-3xl mb-8">個人のスキルと企業のニーズを最適にマッチングする、次世代の求人プラットフォーム</p>
-      <div class="flex flex-col sm:flex-row gap-4">
-        <%= link_to 'ログイン', login_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300" %>
-        <%= link_to '新規登録', signup_path, class: "bg-white hover:bg-gray-100 text-blue-500 border border-blue-500 font-bold py-3 px-8 rounded-lg transition duration-300" %>
-      </div>
-    </div>
-
-    <!-- 特徴セクション -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
-      <div class="bg-gray-50 p-8 rounded-lg text-center">
-        <div class="bg-blue-100 w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center">
-          <i class="fas fa-search text-blue-500 text-2xl"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">スマートマッチング</h3>
-        <p class="text-gray-600">AIを活用した最適なマッチングアルゴリズムで、あなたのスキルに合った求人を提案します。</p>
-      </div>
-      
-      <div class="bg-gray-50 p-8 rounded-lg text-center">
-        <div class="bg-blue-100 w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center">
-          <i class="fas fa-comments text-blue-500 text-2xl"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">ダイレクトコミュニケーション</h3>
-        <p class="text-gray-600">企業と直接メッセージのやり取りが可能。採用プロセスをスムーズに進めることができます。</p>
-      </div>
-      
-      <div class="bg-gray-50 p-8 rounded-lg text-center">
-        <div class="bg-blue-100 w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center">
-          <i class="fas fa-briefcase text-blue-500 text-2xl"></i>
-        </div>
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">多様な求人情報</h3>
-        <p class="text-gray-600">フルタイム、リモート、フリーランスなど、多様な働き方に対応した求人情報を掲載しています。</p>
-      </div>
+    <div class="max-w-4xl mx-auto text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">ご利用の流れ</h2>
+      <p class="text-lg text-gray-600">
+        AIDD.WORKは、AI駆動開発の専門家と企業をシンプルかつ効果的につなぎます。
+      </p>
     </div>
     
-
-    
-    <!-- CTAセクション -->
-    <div class="text-center">
-      <h2 class="text-3xl font-bold text-gray-800 mb-6">あなたのキャリアの次のステップを踏み出しましょう</h2>
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">今すぐ登録して、あなたのスキルや経験にマッチする求人を見つけましょう。</p>
-      <%= link_to '無料で登録する', signup_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 text-lg" %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
+      <div>
+        <h3 class="text-2xl font-bold mb-8 text-center md:text-left">エンジニアの方</h3>
+        <div class="space-y-8">
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 100ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              1
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">プロフィール作成</h4>
+              <p class="text-gray-600">
+                経験やスキル、特にAIツールの使用経験を詳しく記載しましょう。
+              </p>
+            </div>
+          </div>
+          
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 200ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              2
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">求人を探す</h4>
+              <p class="text-gray-600">
+                AIツールを活用する企業の求人を検索し、興味のある案件に応募しましょう。
+              </p>
+            </div>
+          </div>
+          
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 300ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              3
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">面接と採用</h4>
+              <p class="text-gray-600">
+                企業との面接を通じて、あなたのAIツールの専門知識をアピールしましょう。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-2xl font-bold mb-8 text-center md:text-left">企業の方</h3>
+        <div class="space-y-8">
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 150ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              1
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">企業登録</h4>
+              <p class="text-gray-600">
+                AI駆動開発に関する御社の取り組みや求めるスキルセットを記載しましょう。
+              </p>
+            </div>
+          </div>
+          
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 250ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              2
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">求人掲載</h4>
+              <p class="text-gray-600">
+                AIツールの知識やスキルを明記した求人を掲載し、適切な人材を見つけましょう。
+              </p>
+            </div>
+          </div>
+          
+          <div class="animate-slide-up flex gap-4" style="animation-delay: 350ms">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center">
+              3
+            </div>
+            <div>
+              <h4 class="text-lg font-bold mb-1">人材の探索と面接</h4>
+              <p class="text-gray-600">
+                AIツールに精通した人材を探し、革新的な開発チームを構築しましょう。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section text-center">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">今すぐ始めましょう</h2>
+    <p class="text-xl text-gray-600 mb-8">
+      AI駆動開発の力を活用して、あなたのキャリアや企業の可能性を広げましょう。
+    </p>
+    <%= link_to signup_path, class: "bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg transition duration-300 text-lg inline-flex items-center" do %>
+      無料で登録する <i class="fas fa-arrow-right ml-2"></i>
+    <% end %>
   </div>
 </section>

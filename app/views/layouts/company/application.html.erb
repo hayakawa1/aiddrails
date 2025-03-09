@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "法人ユーザー - MyApp" %></title>
+    <title><%= content_for(:title) || "AIDD.WORK - 法人ユーザー" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -14,48 +14,151 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans JP"', 'sans-serif'],
+              display: ['"Zen Kaku Gothic New"', 'sans-serif'],
+            },
+          }
+        }
+      }
+    </script>
 
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <style>
+      /* インラインスタイル */
+      body {
+        font-family: 'Noto Sans JP', sans-serif;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+      
+      .text-gradient {
+        background-image: linear-gradient(to right, #3b82f6, #4f46e5);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      
+      .feature-card {
+        background-color: white;
+        border-radius: 0.8rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      
+      .feature-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        background-color: rgba(59, 130, 246, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+      
+      .feature-icon i {
+        color: #3b82f6;
+        font-size: 1.5rem;
+      }
+    </style>
+
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="bg-gray-100">
-    <!-- トップナビゲーション -->
-    <nav class="bg-white shadow-md">
-      <div class="container mx-auto px-4 py-3">
-        <div class="flex justify-between items-center">
-          <div class="font-bold text-xl text-green-600">MyApp - 法人ユーザー</div>
-          <div class="flex space-x-4">
-            <% if logged_in? %>
-              <%= link_to 'プロフィール', company_profile_show_path, class: 'text-gray-700 hover:text-green-500' %>
-              <%= link_to '求人管理', company_jobs_path, class: 'text-gray-700 hover:text-green-500' %>
-              <%= link_to 'マッチング', company_matching_index_path, class: 'text-gray-700 hover:text-green-500' %>
-              <%= link_to 'メッセージ', company_messages_path, class: 'text-gray-700 hover:text-green-500' %>
-              <span class="text-gray-700">
-                <%= current_user.user_id %> (<%= current_user.user_type %>)
-              </span>
-              <%= link_to 'ログアウト', logout_path, data: { turbo_method: :delete }, class: 'bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded focus:outline-none focus:shadow-outline' %>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="font-bold text-xl">
+          <%= link_to root_path, class: "flex items-center" do %>
+            <span class="text-gradient">AIDD.WORK</span>
+            <span class="ml-2 text-gray-600">法人ユーザー</span>
+          <% end %>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+          <% if logged_in? %>
+            <%= link_to company_profile_show_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
+              <i class="fas fa-user-circle mr-1"></i> プロフィール
             <% end %>
-          </div>
+            <%= link_to company_jobs_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
+              <i class="fas fa-briefcase mr-1"></i> 求人管理
+            <% end %>
+            <%= link_to company_matching_index_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
+              <i class="fas fa-handshake mr-1"></i> マッチング
+            <% end %>
+            <%= link_to company_messages_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
+              <i class="fas fa-envelope mr-1"></i> メッセージ
+            <% end %>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-4">
+          <% if logged_in? %>
+            <span class="text-gray-700 hidden md:inline">
+              <i class="fas fa-user mr-1"></i> <%= current_user.user_id %> (<%= current_user.user_type %>)
+            </span>
+            <%= link_to logout_path, data: { turbo_method: :delete }, class: 'flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
+              <i class="fas fa-sign-out-alt"></i> ログアウト
+            <% end %>
+          <% else %>
+            <%= link_to login_path, class: 'flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white font-medium py-1.5 px-3 rounded transition duration-300 mr-2' do %>
+              <i class="fas fa-sign-in-alt"></i> ログイン
+            <% end %>
+            <%= link_to signup_path, class: 'flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white font-medium py-1.5 px-3 rounded transition duration-300' do %>
+              <i class="fas fa-user-plus"></i> 会員登録
+            <% end %>
+          <% end %>
         </div>
       </div>
     </nav>
 
-    <!-- メインコンテンツ -->
-    <div class="container mx-auto px-4 py-8">
-      <% flash.each do |message_type, message| %>
-        <% alert_class = message_type == 'success' ? 'bg-green-100 border-green-500 text-green-700' : 'bg-red-100 border-red-500 text-red-700' %>
-        <div class="<%= alert_class %> border-l-4 p-4 mb-4 rounded">
-          <%= message %>
+    <main class="flex-grow">
+      <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <% flash.each do |message_type, message| %>
+          <% 
+            alert_class = case message_type 
+              when 'success', 'notice'
+                'bg-green-100 border-green-500 text-green-700'
+              else
+                'bg-red-100 border-red-500 text-red-700'
+              end 
+          %>
+          <div class="<%= alert_class %> border-l-4 p-4 mb-4 rounded">
+            <%= message %>
+          </div>
+        <% end %>
+        
+        <%= yield %>
+      </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+      <div class="container mx-auto px-4">
+        <div class="text-center">
+          <p class="text-sm">&copy; <%= Date.today.year %> AIDD.WORK All Rights Reserved.</p>
         </div>
-      <% end %>
-      
-      <%= yield %>
-    </div>
+      </div>
+    </footer>
   </body>
 </html> 

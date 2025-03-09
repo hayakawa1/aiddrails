@@ -4,6 +4,9 @@
  *
  * Any CSS (and SCSS, if configured) file within this directory, subdirectory, or in the vendor/assets
  * directory can be referenced here using a relative path.
+ *
+ *= require_self
+ *= require custom
  */
 
- /* アプリケーション固有のスタイル */
+/* アプリケーション固有のスタイル */
