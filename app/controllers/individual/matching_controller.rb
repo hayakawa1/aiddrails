@@ -47,6 +47,9 @@ class Individual::MatchingController < ApplicationController
           target_user_id: @user.id,
           job_id: @job.id
         )
+        
+        # マッチング成立時に請求レコードを作成
+        MatchingService.create_invoice_for_match(@user.id, company_user.id, @job.id)
       end
       
       render json: { 

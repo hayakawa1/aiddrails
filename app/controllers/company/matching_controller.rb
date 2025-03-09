@@ -93,6 +93,9 @@ class Company::MatchingController < ApplicationController
           job_id: @job.id
         )
         Rails.logger.info "Match found and conversation created: conversation_id=#{conversation.id}"
+        
+        # マッチング成立時に請求レコードを作成
+        MatchingService.create_invoice_for_match(@target_user.id, @current_user.id, @job.id)
       end
       
       render json: { 

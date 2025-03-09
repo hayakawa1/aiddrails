@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  occurred_at: 2025-03-10 00:21:11
+  individual_user: one
+  company_user: one
+  job: one
+  amount: 1
+  paid: false
+
+two:
+  occurred_at: 2025-03-10 00:21:11
+  individual_user: two
+  company_user: two
+  job: two
+  amount: 1
+  paid: false

@@ -230,4 +230,23 @@ class MatchingService
       skill_match_score: skill_match_score
     }
   end
+  
+  # マッチング成立時に請求レコードを作成するメソッド
+  def self.create_invoice_for_match(individual_user_id, company_user_id, job_id)
+    job = Job.find(job_id)
+    
+    # 請求金額の設定 - 例えば、求人の給与の10%を請求額とする
+    # 実際のビジネスロジックに合わせて調整してください
+    amount = (job.salary * 1000 * 0.1).to_i  # 月給の10%を請求額とする
+    
+    # 請求レコードの作成
+    Invoice.create!(
+      occurred_at: Time.current,
+      individual_user_id: individual_user_id,
+      company_user_id: company_user_id,
+      job_id: job_id,
+      amount: amount,
+      paid: false
+    )
+  end
 end 

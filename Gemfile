@@ -53,6 +53,9 @@ gem "dotenv"
 # スケジューラ
 gem "rufus-scheduler", "~> 3.9", require: true
 
+# PDF生成
+gem "prawn", "~> 2.4"
+
 group :development, :test do
   # デバッグツール - すべて無効化
   # gem "debug", platforms: %i[mri mingw x64_mingw]

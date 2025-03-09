@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_03_135649) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_09_152111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_135649) do
     t.datetime "updated_at", null: false
     t.integer "desired_salary"
     t.index ["user_id"], name: "index_individual_profiles_on_user_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.datetime "occurred_at"
+    t.bigint "individual_user_id", null: false
+    t.bigint "company_user_id", null: false
+    t.bigint "job_id", null: false
+    t.integer "amount", null: false
+    t.boolean "paid", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_user_id"], name: "index_invoices_on_company_user_id"
+    t.index ["individual_user_id"], name: "index_invoices_on_individual_user_id"
+    t.index ["job_id"], name: "index_invoices_on_job_id"
   end
 
   create_table "job_skills", force: :cascade do |t|
@@ -174,6 +188,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_03_135649) do
   add_foreign_key "conversations", "users"
   add_foreign_key "conversations", "users", column: "target_user_id"
   add_foreign_key "individual_profiles", "users"
+  add_foreign_key "invoices", "jobs"
+  add_foreign_key "invoices", "users", column: "company_user_id"
+  add_foreign_key "invoices", "users", column: "individual_user_id"
   add_foreign_key "job_skills", "jobs"
   add_foreign_key "job_skills", "skills"
   add_foreign_key "jobs", "company_profiles"

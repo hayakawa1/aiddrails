@@ -119,6 +119,9 @@
             <%= link_to company_messages_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
               <i class="fas fa-envelope mr-1"></i> メッセージ
             <% end %>
+            <%= link_to company_invoices_path, class: 'text-gray-700 hover:text-blue-500 transition-colors' do %>
+              <i class="fas fa-file-invoice-dollar mr-1"></i> 請求
+            <% end %>
           <% end %>
         </div>
         
@@ -167,6 +170,9 @@
               <% end %>
               <%= link_to company_messages_path, class: 'text-gray-700 hover:text-blue-500 transition-colors py-2 border-b border-gray-100' do %>
                 <i class="fas fa-envelope mr-1"></i> メッセージ
+              <% end %>
+              <%= link_to company_invoices_path, class: 'text-gray-700 hover:text-blue-500 transition-colors py-2 border-b border-gray-100' do %>
+                <i class="fas fa-file-invoice-dollar mr-1"></i> 請求
               <% end %>
               <div class="text-gray-700 py-2 border-b border-gray-100">
                 <i class="fas fa-user mr-1"></i> <%= current_user.user_id %> (<%= current_user.user_type %>)

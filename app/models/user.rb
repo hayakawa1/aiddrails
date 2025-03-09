@@ -26,6 +26,10 @@ class User < ApplicationRecord
   has_many :conversations, dependent: :destroy
   has_many :target_conversations, class_name: 'Conversation', foreign_key: 'target_user_id', dependent: :destroy
   has_many :messages, foreign_key: 'sender_id', dependent: :destroy
+  
+  # 請求書関連
+  has_many :invoices_as_individual, class_name: 'Invoice', foreign_key: 'individual_user_id', dependent: :destroy
+  has_many :invoices_as_company, class_name: 'Invoice', foreign_key: 'company_user_id', dependent: :destroy
 
   # パスワードをハッシュ化して保存するためのメソッド
   def password=(raw_password)

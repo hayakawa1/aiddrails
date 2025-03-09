@@ -26,6 +26,14 @@ Rails.application.routes.draw do
       end
     end
     
+    # 請求機能
+    resources :invoices, only: [:index, :show] do
+      member do
+        patch :mark_as_paid
+        get :download_pdf
+      end
+    end
+    
     # 会社ユーザーのルートパス
     root 'profile#show'
   end

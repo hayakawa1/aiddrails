@@ -1,0 +1,73 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">請求詳細</h1>
+    <div class="flex space-x-2">
+      <%= link_to company_invoices_path, class: "bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-lg transition" do %>
+        <i class="fas fa-arrow-left mr-2"></i>一覧に戻る
+      <% end %>
+      <%= link_to download_pdf_company_invoice_path(@invoice), class: "bg-green-100 text-green-700 hover:bg-green-200 px-4 py-2 rounded-lg transition" do %>
+        <i class="fas fa-file-pdf mr-2"></i>PDF
+      <% end %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">請求情報</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-gray-600">請求ID:</span>
+          <span class="font-medium"><%= @invoice.id %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">発行日:</span>
+          <span class="font-medium"><%= @invoice.occurred_at.strftime('%Y年%m月%d日') %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">支払い期限:</span>
+          <span class="font-medium"><%= (@invoice.occurred_at + 30.days).strftime('%Y年%m月%d日') %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">支払い状況:</span>
+          <% if @invoice.paid %>
+            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+              支払済
+            </span>
+          <% else %>
+            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+              未払い
+            </span>
+          <% end %>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">請求金額:</span>
+          <span class="font-bold text-lg"><%= number_to_currency(@invoice.amount, unit: '¥', precision: 0) %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-gray-50 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">対象求人情報</h2>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-gray-600">求人タイトル:</span>
+          <span class="font-medium"><%= @invoice.job.title %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">求職者:</span>
+          <span class="font-medium"><%= @invoice.individual_user.individual_profile&.display_name || @invoice.individual_user.user_id %></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">マッチング日時:</span>
+          <span class="font-medium"><%= @invoice.occurred_at.strftime('%Y/%m/%d %H:%M') %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% unless @invoice.paid %>
+    <div class="flex justify-center mt-6">
+      <%= button_to "支払い済みにする", mark_as_paid_company_invoice_path(@invoice), method: :patch, class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition", data: { confirm: "この請求を支払い済みに設定してよろしいですか？" } %>
+    </div>
+  <% end %>
+</div>
