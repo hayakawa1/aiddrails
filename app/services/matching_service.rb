@@ -235,8 +235,8 @@ class MatchingService
   def self.create_invoice_for_match(individual_user_id, company_user_id, job_id)
     job = Job.find(job_id)
     
-    # 請求金額の設定 - 年収の1%を請求額とする
-    amount = (job.salary * 10000 * 0.01).to_i  # 年収の1%を請求額とする
+    # 請求金額の設定 - 年収の1.1%を請求額とする
+    amount = (job.salary * 10000 * 0.011).to_i  # 年収の1.1%を請求額とする
     
     # 請求レコードの作成
     Invoice.create!(

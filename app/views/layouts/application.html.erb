@@ -237,7 +237,7 @@
 
     <footer class="bg-gray-800 text-white py-8 mt-auto">
       <div class="container mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <h3 class="font-bold text-xl mb-4">AIDD.WORK</h3>
             <p class="text-gray-300 text-sm">
@@ -248,16 +248,10 @@
           <div>
             <h3 class="font-bold text-lg mb-4">サービス</h3>
             <ul class="space-y-2 text-gray-300">
-              <li><a href="#" class="hover:text-blue-300 transition">エンジニア向け情報</a></li>
-              <li><a href="#" class="hover:text-blue-300 transition">企業向け情報</a></li>
-              <li><a href="#" class="hover:text-blue-300 transition">AI駆動開発とは</a></li>
+              <li><%= link_to "エンジニア向け情報", "/engineer_info", class: "hover:text-blue-300 transition" %></li>
+              <li><%= link_to "企業向け情報", "/company_info", class: "hover:text-blue-300 transition" %></li>
+              <li><%= link_to "AI駆動開発とは", "/about_aidd", class: "hover:text-blue-300 transition" %></li>
             </ul>
-          </div>
-          
-          <div>
-            <h3 class="font-bold text-lg mb-4">お問い合わせ</h3>
-            <p class="text-gray-300 mb-2">お問い合わせはこちらからお願いします。</p>
-            <a href="#" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">お問い合わせ</a>
           </div>
         </div>
         

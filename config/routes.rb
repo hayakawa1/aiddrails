@@ -4,6 +4,11 @@ Rails.application.routes.draw do
     get '/test', to: 'test#index'
   end
 
+  # 新しく追加したページ
+  get '/engineer_info', to: 'home#engineer_info'
+  get '/company_info', to: 'home#company_info'
+  get '/about_aidd', to: 'home#about_aidd'
+
   namespace :company do
     get "matching/index"
     get "matching/show"
