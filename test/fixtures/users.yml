@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user_id: MyString
-  password: MyString
-  user_type: MyString
+  user_id: individual_user
+  password: <%= BCrypt::Password.create('password123') %>
+  user_type: 個人
 
 two:
-  user_id: MyString
-  password: MyString
-  user_type: MyString
+  user_id: company_user
+  password: <%= BCrypt::Password.create('password123') %>
+  user_type: 法人

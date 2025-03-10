@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # テスト環境でのみ使用するルート
+  if Rails.env.test?
+    get '/test', to: 'test#index'
+  end
+
   namespace :company do
     get "matching/index"
     get "matching/show"
@@ -42,6 +47,7 @@ Rails.application.routes.draw do
   get '/login', to: 'sessions#new'
   post '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
+  get '/logout', to: 'sessions#destroy'
   
   # ユーザー登録関連のルーティング
   get '/signup', to: 'users#new'
@@ -74,6 +80,13 @@ Rails.application.routes.draw do
   # 法人ユーザー向けのルーティング
   namespace :corporate do
     # 将来的に法人向け機能を追加
+  end
+  
+  # 法的ページのルート
+  scope '/legal' do
+    get 'commerce', to: 'legal#commerce'
+    get 'privacy', to: 'legal#privacy'
+    get 'terms', to: 'legal#terms'
   end
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

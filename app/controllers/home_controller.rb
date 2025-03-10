@@ -1,4 +1,7 @@
 class HomeController < ApplicationController
+  # ホーム画面へのアクセスは認証不要
+  skip_before_action :require_login, only: [:index]
+
   def index
     # ログイン済みの場合はユーザー種別に応じたダッシュボードにリダイレクト
     if logged_in?

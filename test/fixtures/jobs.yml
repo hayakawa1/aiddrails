@@ -7,8 +7,7 @@ one:
   employment_type: one
   work_style: one
   location: one
-  salary_min: 1
-  salary_max: 1
+  salary: 300000
 
 two:
   title: MyString
@@ -17,5 +16,4 @@ two:
   employment_type: two
   work_style: two
   location: two
-  salary_min: 1
-  salary_max: 1
+  salary: 350000

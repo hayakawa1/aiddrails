@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  # ユーザー登録関連のアクセスは認証不要
+  skip_before_action :require_login, only: [:new, :create]
+
   def new
     @user = User.new
     # デバッグ用のログ出力

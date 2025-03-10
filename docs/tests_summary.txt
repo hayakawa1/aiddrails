@@ -1,0 +1,92 @@
+# テスト構成要約
+
+## 1. モデルテスト (test/models/)
+
+### UserTest (test/models/user_test.rb)
+- ユーザーモデルのバリデーションテスト
+- ユーザーID、パスワード、ユーザータイプの存在確認
+- ユーザーIDの一意性検証
+- 関連付けの検証（プロフィール、スキル、ロケーションなど）
+
+### JobTest (test/models/job_test.rb)
+- 求人モデルのバリデーションテスト
+- タイトル、説明文、給与の存在確認
+- 給与が正の数値であることの検証
+- 関連付けの検証（会社プロフィール、雇用形態、勤務形態、勤務地など）
+- JobSkillとの関連性検証
+
+## 2. コントローラーテスト (test/controllers/)
+
+### SessionsControllerTest (test/controllers/sessions_controller_test.rb)
+- ログインフォーム表示のテスト
+- 有効な認証情報でのログインテスト
+- 無効な認証情報でのログイン失敗テスト
+- ログアウト機能のテスト
+
+### UsersControllerTest (test/controllers/users_controller_test.rb)
+- ユーザー登録フォーム表示のテスト
+- 有効なパラメータでのユーザー作成テスト
+- 無効なパラメータでのユーザー作成失敗テスト
+- 重複ユーザーIDでの登録失敗テスト
+
+### HomeControllerTest (test/controllers/home_controller_test.rb)
+- トップページ表示のテスト
+
+### Individual名前空間のコントローラーテスト
+- ProfileControllerTest: プロフィール表示・編集・更新のテスト
+- MatchingControllerTest: 求人一覧・詳細表示、いいね機能のテスト
+- MessagesControllerTest: メッセージ一覧・詳細表示、メッセージ送信のテスト
+
+### Company名前空間のコントローラーテスト
+- ProfileControllerTest: 会社プロフィール表示・編集・更新のテスト
+- JobsControllerTest: 求人の作成・編集・削除のテスト
+- MatchingControllerTest: 応募者一覧・詳細表示のテスト
+- MessagesControllerTest: メッセージ機能のテスト
+
+## 3. 統合テスト (test/integration/)
+
+### UserFlowsTest (test/integration/user_flows_test.rb)
+- 個人ユーザーの登録からログインまでの一連のフロー
+- 企業ユーザーの登録からログインまでの一連のフロー
+- 無効な認証情報でのログイン失敗フロー
+
+## 4. システムテスト (test/system/)
+
+### UserRegistrationsTest (test/system/user_registrations_test.rb)
+- ブラウザを使った個人ユーザー登録のテスト
+- ブラウザを使った企業ユーザー登録のテスト
+- バリデーションエラーの表示テスト
+
+## 5. テスト環境の構成
+
+### テストヘルパー (test/test_helper.rb)
+- MockUserクラスの定義: テスト環境でのユーザー認証をモック化
+- ApplicationControllerのメソッドをモンキーパッチ
+  - require_login: テスト環境では常に認証を通過
+  - current_user: テスト環境では常にモックユーザーを返す
+  - logged_in?: テスト環境では常にtrueを返す
+- SignInHelperモジュール
+  - sign_in_as_individual: 個人ユーザーとしてログイン
+  - sign_in_as_company: 企業ユーザーとしてログイン
+
+### テスト用フィクスチャ
+- users.yml: 個人ユーザーと企業ユーザーのテストデータ
+- jobs.yml: 求人情報のテストデータ
+- conversations.yml: 会話のテストデータ
+
+## 6. テスト実行方法
+
+- すべてのテスト: `bin/rails test`
+- モデルテストのみ: `bin/rails test:models`
+- コントローラーテストのみ: `bin/rails test:controllers`
+- 統合テストのみ: `bin/rails test:integration`
+- システムテストのみ: `bin/rails test:system`
+- 特定のテストファイル: `bin/rails test test/models/user_test.rb`
+
+## 7. テスト環境構成の注意点
+
+1. テスト環境では認証をバイパスする設定がされており、すべてのリクエストが認証済みとして処理される
+2. BCryptを使用してパスワードをハッシュ化
+3. テストフィクスチャでは個人ユーザーと企業ユーザーの区別を「個人」と「法人」の日本語で設定
+4. 統合テストでは実際のユーザー登録とログインフローを検証
+5. テスト実行時にCSRF保護は無効化される 

@@ -1,4 +1,7 @@
 class SessionsController < ApplicationController
+  # ログイン関連のアクセスは認証不要
+  skip_before_action :require_login, except: [:destroy]
+
   def new
     # ログインフォームを表示するだけ
     Rails.logger.debug "ログインフォームを表示します" if Rails.env.development?

@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user_id: one
-  target_user_id: one
-  job_id: one
+  user: one
+  target_user: two
+  job: one
   status: MyString
 
 two:
-  user_id: two
-  target_user_id: two
-  job_id: two
+  user: two
+  target_user: one
+  job: two
   status: MyString

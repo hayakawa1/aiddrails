@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap');
 
+/* 複雑なクラスを削除し、シンプルな実装にする */
+
 :root {
   --background: 210 20% 98%;
   --foreground: 222.2 84% 4.9%;
@@ -110,6 +112,16 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 1rem;
   position: relative;
   z-index: 2;
+}
+
+/* ヒーローテキストのトランジション */
+.hero-headline, 
+.hero-description {
+  transition: opacity 0.5s ease;
+  min-height: 3em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /* アニメーション */

@@ -13,9 +13,8 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/favicon.svg">
 
     <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&family=Zen+Kaku+Gothic+New:wght@300;400;500;700;900&display=swap">
@@ -238,10 +237,132 @@
 
     <footer class="bg-gray-800 text-white py-8 mt-auto">
       <div class="container mx-auto px-4">
-        <div class="text-center">
-          <p class="text-sm">&copy; <%= Date.today.year %> AIDD.WORK All Rights Reserved.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="font-bold text-xl mb-4">AIDD.WORK</h3>
+            <p class="text-gray-300 text-sm">
+              AI駆動開発エンジニアと企業をつなぐマッチングプラットフォーム。Cursorなどのツールを使いこなすエンジニアと、最先端の開発スキルを求める企業をつなぎます。
+            </p>
+          </div>
+          
+          <div>
+            <h3 class="font-bold text-lg mb-4">サービス</h3>
+            <ul class="space-y-2 text-gray-300">
+              <li><a href="#" class="hover:text-blue-300 transition">エンジニア向け情報</a></li>
+              <li><a href="#" class="hover:text-blue-300 transition">企業向け情報</a></li>
+              <li><a href="#" class="hover:text-blue-300 transition">AI駆動開発とは</a></li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-bold text-lg mb-4">お問い合わせ</h3>
+            <p class="text-gray-300 mb-2">お問い合わせはこちらからお願いします。</p>
+            <a href="#" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">お問い合わせ</a>
+          </div>
+        </div>
+        
+        <div class="border-t border-gray-700 pt-6 flex flex-col md:flex-row justify-between items-center">
+          <p class="text-sm text-gray-400">&copy; <%= Date.today.year %> AIDD.WORK All Rights Reserved.</p>
+          
+          <div class="mt-4 md:mt-0 flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+            <%= link_to "特定商取引法に基づく表記", "/legal/commerce", class: "hover:text-white transition" %>
+            <%= link_to "プライバシーポリシー", "/legal/privacy", class: "hover:text-white transition" %>
+            <%= link_to "利用規約", "/legal/terms", class: "hover:text-white transition" %>
+          </div>
         </div>
       </div>
     </footer>
+
+    <script>
+      // ヒーローセクションのスライドショー - インラインスクリプト
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log("インラインスクリプトが実行されました");
+        
+        // ヒーローセクションの要素
+        const heroSection = document.querySelector('.hero-section');
+        if (!heroSection) {
+          console.error("Hero section not found");
+          return;
+        }
+        
+        // ヘッドラインと説明の要素
+        const headline = document.querySelector('.hero-headline');
+        const description = document.querySelector('.hero-description');
+        
+        if (!headline || !description) {
+          console.error("Hero headline or description not found");
+          return;
+        }
+        
+        console.log("Hero elements found:", {headline, description});
+        
+        // テキストの配列
+        const headlines = [
+          'AI駆動開発エンジニアと<br/><span class="text-blue-500">企業の新しい</span>マッチング体験',
+          '<span class="text-blue-500">最先端のAIツール</span>を<br/>使いこなす人材を探す',
+          'AI時代の<br/><span class="text-blue-500">エンジニアキャリア</span>の第一歩',
+          '<span class="text-blue-500">効率的な開発</span>と<br/>革新的なプロダクト開発',
+          '企業と人材を<br/><span class="text-blue-500">AIの力</span>でつなぐ'
+        ];
+        
+        const descriptions = [
+          'AIDD.WORKは、Cursorなどのツールを使いこなすエンジニアと、<br/>最先端の開発スキルを求める企業をつなぐプラットフォームです。',
+          'AI駆動開発のツールを活用できるエンジニアは、<br/>これからの時代に欠かせない貴重な人材です。',
+          'AIツールを駆使する能力は、<br/>次世代のエンジニアに求められる最重要スキルです。',
+          'AI駆動開発によって、<br/>開発速度と創造性の両方を高めた企業が成功します。',
+          '人間とAIのベストな組み合わせで、<br/>これからのソフトウェア開発の形を創造しましょう。'
+        ];
+        
+        let currentIndex = 0;
+        const interval = 5000; // 5秒ごとに切り替え
+        
+        // テキストを更新する関数
+        function updateText() {
+          console.log(`Updating to text index ${currentIndex}`);
+          
+          // 要素をフェードアウトしながら右にスライドアウト
+          headline.style.opacity = 0;
+          headline.style.transform = 'translateX(50px) scale(0.9)';
+          description.style.opacity = 0;
+          description.style.transform = 'translateX(50px) scale(0.9)';
+          
+          // テキストを更新
+          setTimeout(function() {
+            headline.innerHTML = headlines[currentIndex];
+            description.innerHTML = descriptions[currentIndex];
+            
+            // 要素を左からスライドインする準備
+            headline.style.transform = 'translateX(-50px) scale(0.9)';
+            description.style.transform = 'translateX(-50px) scale(0.9)';
+            
+            // わずかな遅延を入れてアニメーションをスムーズに
+            setTimeout(function() {
+              // 要素をフェードインしながら中央にスライドイン
+              headline.style.opacity = 1;
+              headline.style.transform = 'translateX(0) scale(1)';
+              description.style.opacity = 1;
+              description.style.transform = 'translateX(0) scale(1)';
+            }, 50);
+            
+            // インデックスを進める
+            currentIndex = (currentIndex + 1) % headlines.length;
+          }, 500);
+        }
+        
+        // 初期テキストを表示
+        headline.innerHTML = headlines[0];
+        description.innerHTML = descriptions[0];
+        currentIndex = 1;
+        
+        // スタイルを追加
+        headline.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        description.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        // スライドショーを開始
+        setInterval(updateText, interval);
+        
+        console.log("Hero slideshow started");
+      });
+    </script>
   </body>
 </html>
