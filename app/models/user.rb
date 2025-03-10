@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  validates :user_id, presence: true, uniqueness: true
+  validates :user_id, presence: true, uniqueness: true,
+                     format: { with: /\A[a-zA-Z0-9_\-\.]+\z/, message: "は半角英数字と一部の記号（_-.）のみ使用できます" }
   validates :password, presence: true
   validates :user_type, presence: true
 

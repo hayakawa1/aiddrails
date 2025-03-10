@@ -30,7 +30,6 @@ class UsersController < ApplicationController
       puts "ユーザー登録が失敗しました: #{@user.errors.full_messages.join(', ')}"
       Rails.logger.debug "ユーザー登録が失敗しました: #{@user.errors.full_messages.join(', ')}" if Rails.env.development?
       
-      flash.now[:error] = "登録に失敗しました"
       render :new, status: :unprocessable_entity
     end
   end

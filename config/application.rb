@@ -35,5 +35,9 @@ module Myapp
     
     # Tailwind CSS設定
     config.assets.paths << Rails.root.join("app/assets/tailwind")
+
+    # デフォルトのロケールを日本語に設定
+    config.i18n.default_locale = :ja
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
   end
 end

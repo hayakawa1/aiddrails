@@ -1,0 +1,27 @@
+ja:
+  activerecord:
+    models:
+      user: ユーザー
+    attributes:
+      user:
+        user_id: ユーザーID
+        password: パスワード
+        user_type: アカウント種別
+    errors:
+      models:
+        user:
+          attributes:
+            user_id:
+              blank: を入力してください
+              taken: は既に使用されています
+            password:
+              blank: を入力してください
+            user_type:
+              blank: を選択してください
+  
+  errors:
+    messages:
+      blank: を入力してください
+      taken: は既に使用されています
+      record_invalid: "バリデーションに失敗しました: %{errors}"
+      not_a_number: は数値で入力してください 
